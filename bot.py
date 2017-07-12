@@ -2,7 +2,16 @@ from telegram.ext import Updater
 from telegram.ext import CommandHandler
 
 import logging
+import yaml
 import time
+
+class config(object):
+    filename = ''
+
+    def __init__(self):
+        fileData = open(self.filename).read()
+        fileData = fileData.replace('\t', ' ' * 4)
+        self.data = yaml.load(fileData)
 
 logging.basicConfig(
     format = '%(asctime)s - %(name)s - %(levelname)s - %(message)s',
