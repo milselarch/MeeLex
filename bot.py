@@ -2,16 +2,9 @@ from telegram.ext import Updater
 from telegram.ext import CommandHandler
 
 import logging
-import yaml
-import time
 
-class config(object):
-    filename = ''
-
-    def __init__(self):
-        fileData = open(self.filename).read()
-        fileData = fileData.replace('\t', ' ' * 4)
-        self.data = yaml.load(fileData)
+import config
+conf = config.config()
 
 logging.basicConfig(
     format = '%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -19,9 +12,10 @@ logging.basicConfig(
     )
 
 class ToastParser(object):
-    toastToken = '389237665:AAHmX25t0ge5qo0hdd99DsUAvhD-l8v8q1s'
+    toastToken = conf['botToken']
 
     def __init__(self):
+        print(self.toastToken)
         self.updater = Updater(self.toastToken)
 
         dispatcher = self.updater.dispatcher
