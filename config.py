@@ -6,6 +6,10 @@ access by using conf[key] where conf is instance of config
 """
 
 class config(object):
+    data = {
+        'botToken': None
+    }
+
     filename = 'config.yml'
 
     def __init__(self):
@@ -17,6 +21,26 @@ class config(object):
     def __getitem__(self, item):
         return self.data[item]
 
+    def update(self):
+        try:
+            self.open()
+        except FileNotFoundError:
+            print("ERR: CONFIG FILE NOT FOUND")
+
+        for key in self.data:
+            current = self.data[key]
+
+            if current == None:
+                self.data[key] = input(key + ": ")
+            else:
+                param = input(key + " [%s]" % current + ": ")
+
+                if param == "": self.data[key] = current
+                else: self.data[key] = param
+
+        with open(self.filename, 'w') as outfile:
+            yaml.dump(self.data, outfile, default_flow_style=False)
+
     def open(self):
         fileData = open(self.filename).read()
         fileData = fileData.replace('\t', ' ' * 4)
@@ -24,16 +48,15 @@ class config(object):
         print(self.data)
 
     def makeDefaults(self):
-        data = {
-            'botToken': None
-        }
-
         print("KEY IN CONFIGS")
-        for key in data:
-            data[key] = input(key+": ")
+
+        for key in self.data:
+            self.data[key] = input(key+": ")
+
 
         with open(self.filename, 'w') as outfile:
-            yaml.dump(data, outfile, default_flow_style=False)
+            yaml.dump(self.data, outfile, default_flow_style=False)
 
 if __name__ == '__main__':
     conf = config()
+    conf.update()
