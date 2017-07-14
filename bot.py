@@ -10,8 +10,8 @@ import json
 
 import urllib.request
 
-#import authServer
-#authServer.run(threaded=True)
+import authServer
+authServer.run(threaded=True)
 
 import config
 conf = config.config()
@@ -63,7 +63,7 @@ class ToastParser(object):
 
     def authenticate(self, replyObj, user_id):
         #link, httpd, flow = cAuth.makeAuthLink("localhost", 30001)
-        link, httpd, flow = cAuth.makeAuthLink(authAddr, 30001)
+        link, httpd, flow = cAuth.makeAuthLink('10.143.163.36', 30000)
         replyObj.send("please authenticate at " + link)
         credential = cAuth.authHandleRequest(flow, httpd)
         dynamo.insert(user_id, credential.to_json())
@@ -102,6 +102,9 @@ class ToastParser(object):
         reply = Reply(bot, update.message.chat_id)
         inText = " ".join(args)
 
+        if (inText == ''): return
+
+        print(inText, "INTEXT")
         print("IE!2")
         oAuths = dynamo.read(telegram_id)
 

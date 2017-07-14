@@ -53,7 +53,8 @@ class ClientRedirectServer(BaseHTTPServer.HTTPServer):
     query_params = {}
 
 class ClientRedirectHandler(BaseHTTPServer.BaseHTTPRequestHandler):
-    """A handler for OAuth 2.0 redirects back to localhost.
+    """
+    A handler for OAuth 2.0 redirects back to localhost.
 
     Waits for a single request and parses the query parameters
     into the servers query_params and then stops serving.
@@ -98,25 +99,15 @@ def makeAuthLink(
         flow.user_agent = APPLICATION_NAME
 
     success = False
-    port_number = port
 
-    try:
-        httpd = ClientRedirectServer(
-            (hostname, port),
-            ClientRedirectHandler
-        )
+    httpd = ClientRedirectServer(
+        (hostname, port),
+        ClientRedirectHandler
+    )
 
-    except socket.error:
-        pass
-    else:
-        success = True
-
-    if success:
-        oauth_callback = 'http://{host}:{port}/'.format(
-            host=flags.auth_host_name, port=port_number
-        )
-    else:
-        oauth_callback = client.OOB_CALLBACK_URN
+    oauth_callback = 'http://{host}:{port}/'.format(
+        host=hostname, port=port
+    )
 
     flow.redirect_uri = oauth_callback
     authorize_url = flow.step1_get_authorize_url()
