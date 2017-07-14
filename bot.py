@@ -4,16 +4,18 @@ from telegram.ext import CommandHandler
 import logging
 import dynamo
 import lexmel
+#import calander
 import cAuth
 import json
 
-import threading
+import urllib.request
 
-import authServer
-authServer.run(threaded=True)
+#import authServer
+#authServer.run(threaded=True)
 
 import config
 conf = config.config()
+authAddr = conf['authAddr']
 
 logging.basicConfig(
     format = '%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -52,11 +54,16 @@ class ToastParser(object):
             'b', self.chatLex, pass_args=True
         ))
 
+        dispatcher.add_handler(CommandHandler(
+            'devc', self.chatDevc, pass_args=True
+        ))
+
     def start(self):
         self.updater.start_polling()
 
     def authenticate(self, replyObj, user_id):
-        link, httpd, flow = cAuth.makeAuthLink("localhost", 30001)
+        #link, httpd, flow = cAuth.makeAuthLink("localhost", 30001)
+        link, httpd, flow = cAuth.makeAuthLink(authAddr, 30001)
         replyObj.send("please authenticate at " + link)
         credential = cAuth.authHandleRequest(flow, httpd)
         dynamo.insert(user_id, credential.to_json())
@@ -94,44 +101,89 @@ class ToastParser(object):
         telegram_id = update.message.from_user.id
         reply = Reply(bot, update.message.chat_id)
         inText = " ".join(args)
-        lexUser = None
+
+        print("IE!2")
+        oAuths = dynamo.read(telegram_id)
+
+        if oAuths == []:
+            print("NEW OAUTH")
+
+            try:
+                self.authenticate(reply, telegram_id)
+                lexmel.users[telegram_id] = lexmel.state(telegram_id)
+                lexUser = lexmel.users[telegram_id]
+
+            except (ValueError, cAuth.client.FlowExchangeError) as e:
+                reply("Authentication process failed!!")
+                return
+
+        credentialJSON = oAuths[0]["credential"]
+        credential = cAuth.makeCredential(credentialJSON)
 
         if telegram_id in lexmel.users:
             print("I!1")
             lexUser = lexmel.users[telegram_id]
-
         else:
-            print("IE!2")
-            oAuths = dynamo.read(telegram_id)
-
-            if oAuths != []:
-                print("OLD OAUTH")
-                lexmel.users[telegram_id] = lexmel.state(telegram_id)
-                lexUser = lexmel.users[telegram_id]
-                print("END OLD OAUTH")
-
-            else:
-                print("NEW OAUTH")
-
-                try:
-                    self.authenticate(reply, telegram_id)
-                    lexmel.users[telegram_id] = lexmel.state(telegram_id)
-                    lexUser = lexmel.users[telegram_id]
-
-                except (ValueError, cAuth.client.FlowExchangeError) as e:
-                    reply("Authentication process failed!!")
+            print("OLD OAUTH")
+            lexmel.users[telegram_id] = lexmel.state(telegram_id)
+            lexUser = lexmel.users[telegram_id]
+            print("END OLD OAUTH")
 
         print("LEX USER", lexUser)
+        print("N!1")
+        print("LEX-RES", args)
 
-        if lexUser != None:
-            print("N!1")
-            print("LEX-RES", args)
-            lexResponse = lexUser.send(inText)
+        lexResponse = lexUser.send(inText)
+        print(json.dumps(lexResponse, indent=4, sort_keys=True))
 
-            #print(json.dumps(lexResponse, indent=4, sort_keys=True))
+        if "message" in lexResponse:
+            reply.send(lexResponse["message"])
 
-            if "message" in lexResponse:
-                reply.send(lexResponse["message"])
+        elif lexResponse["dialogState"] == "ReadyForFulfillment":
+            """
+            #example
+            "slots": {
+                "NumberOfPeople": "10",
+                "RoomDate": "2017-07-15",
+                "RoomNames": "yomama",
+                "RoomTimeSlot": "14:00"
+            }
+            """
+
+            slots = lexResponse["slots"]
+            people = slots["NumberOfPeople"]
+            roomDate = slots["RoomDate"]
+            roomName = slots["RoomNames"]
+            roomTimeSlot = slots["RoomTimeSlot"]
+
+            link = cAuth.makeMeeting(
+                credential, roomTimeSlot, roomDate, roomName
+            )
+
+            reply.send("Room booked! View details @ " + link)
+
+    def chatDevc(self, bot, update, args):
+        #logging.log(logging.INFO, bot, (update, str(args)))
+        print("CHAT LEX")
+        telegram_id = update.message.from_user.id
+        reply = Reply(bot, update.message.chat_id)
+        inText = " ".join(args)
+
+        oAuths = dynamo.read(telegram_id)
+
+        if oAuths != []:
+            credentialJSON = oAuths[0]["credential"]
+            credential = cAuth.makeCredential(credentialJSON)
+            print("PRE MAKE MEET")
+
+            meetingLink = cAuth.makeMeeting(
+                credential, '14:21', '2017-09-21', 'da vinci'
+            )
+
+            reply.send("meeting scheduled. view at " + meetingLink)
+
+        else:
+            reply.send("SETUP CALANDER CREDENTIAL FIRST")
 
 
 if __name__ == '__main__':

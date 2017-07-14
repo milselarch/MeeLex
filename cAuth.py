@@ -35,7 +35,7 @@ except ImportError:
 
 # If modifying these scopes, delete your previously saved credentials
 # at ~/.credentials/calendar-python-quickstart.json
-SCOPES = 'https://www.googleapis.com/auth/calendar.readonly'
+SCOPES = 'https://www.googleapis.com/auth/calendar'
 CLIENT_SECRET_FILE = 'data/client_secret.json'
 APPLICATION_NAME = 'Google Calendar API Python Quickstart'
 
@@ -220,3 +220,58 @@ def run_flow(
     print('Authentication successful.')
 
     return credential
+
+
+def makeMeeting(credential, time, date, room):
+    credentials = credential
+    print(1)
+    http = credentials.authorize(httplib2.Http())
+    print(2)
+    service = discovery.build(
+        'calendar', 'v3', http=http, cache_discovery=False
+    )
+
+    # Refer to the Python quickstart on how to setup the environment:
+    # https://developers.google.com/google-apps/calendar/quickstart/python
+    # Change the scope to 'https://www.googleapis.com/auth/calendar' and delete any
+    # stored credentials.
+
+    # e.g. 14:00
+    displace = [int(x) for x in time.split(':')]
+    displace = displace[0]*3600 + displace[1]*60
+
+    # e.g. 2017-06-12
+    yy, mm, dd = [int(x) for x in date.split('-')]
+    start = datetime.datetime(yy, mm, dd)
+    end = start + datetime.timedelta(seconds=displace)
+
+    # 8 hour UTC displacement
+    start_str = start.strftime('%Y-%m-%dT%H:%M:%S-08:00')
+    end_str = end.strftime('%Y-%m-%dT%H:%M:%S-08:00')
+
+    event = {
+      'summary': 'meeting',
+      'location': room,
+      'description': 'meeting arranged by bookeyapp',
+      'start': {
+        'dateTime': start_str,
+        'timeZone': 'Asia/Singapore',
+      },
+      'end': {
+        'dateTime': end_str,
+        'timeZone': 'Asia/Singapore',
+      },
+      'reminders': {
+        'useDefault': False,
+        'overrides': [
+          {'method': 'email', 'minutes': 24 * 60},
+          {'method': 'popup', 'minutes': 10},
+        ],
+      },
+    }
+
+    event = service.events(
+        ).insert(calendarId='primary', body=event
+        ).execute()
+
+    return event.get('htmlLink')

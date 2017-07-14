@@ -7,16 +7,18 @@ access by using conf[key] where conf is instance of config
 
 class config(object):
     data = {
-        'botToken': None
+        'botToken': None,
+        'authAddr': None
     }
 
     filename = 'data/config.yml'
 
-    def __init__(self):
+    def __init__(self, open = True):
         try:
             self.open()
         except FileNotFoundError:
             self.makeDefaults()
+
 
     def __getitem__(self, item):
         return self.data[item]
@@ -28,6 +30,7 @@ class config(object):
             print("ERR: CONFIG FILE NOT FOUND")
 
         for key in self.data:
+            #print(self.data)
             current = self.data[key]
 
             if current == None:
@@ -44,7 +47,11 @@ class config(object):
     def open(self):
         fileData = open(self.filename).read()
         fileData = fileData.replace('\t', ' ' * 4)
-        self.data = yaml.load(fileData)
+        data = yaml.load(fileData)
+        for key in data:
+            if key in self.data:
+                self.data[key] = data[key]
+
         print(self.data)
 
     def makeDefaults(self):

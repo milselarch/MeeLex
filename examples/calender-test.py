@@ -15,7 +15,6 @@ import datetime
 import logging
 import cAuth
 
-
 try:
     import argparse
     flags = argparse.ArgumentParser(parents=[tools.argparser]).parse_args()
@@ -72,10 +71,11 @@ def get_credentials():
     return credentials
 
 def main():
-    """Shows basic usage of the Google Calendar API.
+    """
+    Shows basic usage of the Google Calendar API.
 
-    Creates a Google Calendar API service object and outputs a list of the next
-    10 events on the user's calendar.
+    Creates a Google Calendar API service object and outputs a
+    list of the next 10 events on the user's calendar.
     """
     credentials = get_credentials()
     print("CREDENTIALS PRE")
