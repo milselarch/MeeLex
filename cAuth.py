@@ -68,9 +68,14 @@ class ClientRedirectHandler(BaseHTTPServer.BaseHTTPRequestHandler):
         self.send_response(http_client.OK)
         self.send_header('Content-type', 'text/html')
         self.end_headers()
+
         parts = urllib.parse.urlparse(self.path)
         query = _helpers.parse_unique_urlencoded(parts.query)
+        print("PATH: " + self.path)
+        print("QUERY: " + str(query))
+
         self.server.query_params = query
+
         self.wfile.write(
             b'<html><head><title>Authentication Status</title></head>')
         self.wfile.write(
@@ -78,41 +83,34 @@ class ClientRedirectHandler(BaseHTTPServer.BaseHTTPRequestHandler):
         self.wfile.write(b'</body></html>')
 
     def log_message(self, format, *args):
-        """Do not log messages to stdout while running as cmd. line program."""
+        """
+        Do not log messages to stdout while
+        running as cmd. line program.
+        """
 
 def run_flow(
-        flow, storage, flags=None, http=None
+        flow, storage, hostname, port, http=None
     ):
 
-    logging.getLogger().setLevel(
-        getattr(logging, flags.logging_level)
-    )
+    success = False
+    port_number = 0
 
-    if not flags.noauth_local_webserver:
-        success = False
-        port_number = 0
+    for port in flags.auth_host_port:
+        port_number = port
+        try:
+            httpd = ClientRedirectServer(
+                (hostname, port),
+                ClientRedirectHandler
+            )
 
-        for port in flags.auth_host_port:
-            port_number = port
-            try:
-                httpd = ClientRedirectServer(
-                    (flags.auth_host_name, port),
-                    ClientRedirectHandler
-                )
-
-            except socket.error:
-                pass
-            else:
-                success = True
-                break
-
-        flags.noauth_local_webserver = not success
-
-        if not success:
+        except socket.error:
             pass
-            #print(_FAILED_START_MESSAGE)
+        else:
+            success = True
+            break
 
-    if not flags.noauth_local_webserver:
+
+    if success:
         oauth_callback = 'http://{host}:{port}/'.format(
             host=flags.auth_host_name, port=port_number
         )
@@ -122,7 +120,7 @@ def run_flow(
     flow.redirect_uri = oauth_callback
     authorize_url = flow.step1_get_authorize_url()
 
-    if not flags.noauth_local_webserver:
+    if success:
         import webbrowser
         webbrowser.open(authorize_url, new=1, autoraise=True)
         #print(_BROWSER_OPENED_MESSAGE.format(address=authorize_url))
@@ -131,8 +129,10 @@ def run_flow(
         #print(_GO_TO_LINK_MESSAGE.format(address=authorize_url))
 
     code = None
-    if not flags.noauth_local_webserver:
+
+    if success:
         httpd.handle_request()
+
         if 'error' in httpd.query_params:
             sys.exit('Authentication request was rejected.')
         if 'code' in httpd.query_params:
@@ -146,6 +146,9 @@ def run_flow(
 
     try:
         credential = flow.step2_exchange(code, http=http)
+        print("CREDS", credential)
+        print(help(credential))
+
     except client.FlowExchangeError as e:
         sys.exit('Authentication has failed: {0}'.format(e))
 

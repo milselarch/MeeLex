@@ -9,7 +9,7 @@ from oauth2client import client
 from oauth2client import tools
 from oauth2client.file import Storage
 
-from six.moves import BaseHTTPServer
+import http.server as BaseHTTPServer
 
 import datetime
 import logging
@@ -44,6 +44,7 @@ def get_credentials():
     if not os.path.exists(credential_dir):
         os.makedirs(credential_dir)
 
+    print(credential_dir)
     credential_path = os.path.join(
         credential_dir, 'calendar-python-quickstart.json'
         )
@@ -60,7 +61,7 @@ def get_credentials():
         if flags:
             print("TOOL RUN3", flags)
             #credentials = tools.run_flow(flow, store, flags)
-            credentials = cAuth.run_flow(flow, store, flags)
+            credentials = cAuth.run_flow(flow, store, 'localhost', 30001)
 
         else: # Needed only for compatibility with Python 2.6
             print("TOOL RUN2")

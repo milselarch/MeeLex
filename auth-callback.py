@@ -19,7 +19,6 @@ class testHTTPServer_RequestHandler(BaseHTTPRequestHandler):
         self.wfile.write(bytes(message, "utf8"))
         return
 
-
 def run():
     print('starting server...')
 
