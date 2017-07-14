@@ -88,6 +88,70 @@ class ClientRedirectHandler(BaseHTTPServer.BaseHTTPRequestHandler):
         running as cmd. line program.
         """
 
+def makeAuthLink(
+        hostname, port, flow=None
+    ):
+
+    if flow == None:
+        flow = client.flow_from_clientsecrets(CLIENT_SECRET_FILE, SCOPES)
+        flow.user_agent = APPLICATION_NAME
+
+    success = False
+    port_number = port
+
+    try:
+        httpd = ClientRedirectServer(
+            (hostname, port),
+            ClientRedirectHandler
+        )
+
+    except socket.error:
+        pass
+    else:
+        success = True
+
+    if success:
+        oauth_callback = 'http://{host}:{port}/'.format(
+            host=flags.auth_host_name, port=port_number
+        )
+    else:
+        oauth_callback = client.OOB_CALLBACK_URN
+
+    flow.redirect_uri = oauth_callback
+    authorize_url = flow.step1_get_authorize_url()
+    return authorize_url, httpd, flow
+
+
+def authHandleRequest(flow, httpd):
+    httpd.handle_request()
+
+    if 'error' in httpd.query_params:
+        sys.exit('Authentication request was rejected.')
+    if 'code' in httpd.query_params:
+        code = httpd.query_params['code']
+    else:
+        print('Failed to find "code" in the query parameters '
+              'of the redirect.')
+        sys.exit('Try running with --noauth_local_webserver.')
+
+    try:
+        credential = flow.step2_exchange(code, http=http)
+        print("CREDS", credential)
+        print(help(credential))
+
+    except client.FlowExchangeError as e:
+        sys.exit('Authentication has failed: {0}'.format(e))
+
+    #storage.put(credential)
+    #credential.set_store(storage)
+    print('Authentication successful.')
+
+    return credential
+
+def makeCredential(json):
+    credential = client.OAuth2Credentials.from_json(json)
+    return credential
+
 def run_flow(
         flow, storage, hostname, port, http=None
     ):
