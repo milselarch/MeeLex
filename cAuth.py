@@ -36,7 +36,7 @@ except ImportError:
 # If modifying these scopes, delete your previously saved credentials
 # at ~/.credentials/calendar-python-quickstart.json
 SCOPES = 'https://www.googleapis.com/auth/calendar.readonly'
-CLIENT_SECRET_FILE = 'client_secret.json'
+CLIENT_SECRET_FILE = 'data/client_secret.json'
 APPLICATION_NAME = 'Google Calendar API Python Quickstart'
 
 """
@@ -135,7 +135,7 @@ def authHandleRequest(flow, httpd):
         sys.exit('Try running with --noauth_local_webserver.')
 
     try:
-        credential = flow.step2_exchange(code, http=http)
+        credential = flow.step2_exchange(code, http=None)
         print("CREDS", credential)
         print(help(credential))
 

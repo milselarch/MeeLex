@@ -10,7 +10,7 @@ class config(object):
         'botToken': None
     }
 
-    filename = 'config.yml'
+    filename = 'data/config.yml'
 
     def __init__(self):
         try:

@@ -13,6 +13,18 @@ logging.basicConfig(
     level = logging.INFO
     )
 
+class Reply(object):
+    def __init__(self, bot, chat_id):
+        self.bot = bot
+        self.chat_id = chat_id
+
+    def send(self, text):
+        self.bot.sendMessage(
+            chat_id=self.chat_id,
+            text=text
+        )
+
+
 class ToastParser(object):
     toastToken = conf['botToken']
 
@@ -39,21 +51,25 @@ class ToastParser(object):
         telegram_id = update.message.from_user.id
 
         oAuths = dynamo.read(telegram_id)
+        print("OAUTHS: " + str(oAuths))
+        reply = Reply(bot, update.message.chat_id)
+
         if oAuths == []:
             link, httpd, flow = cAuth.makeAuthLink("localhost", 30001)
 
-            text = "please authenticate at " + link
-            bot.sendMessage(
-                chat_id=update.message.chat_id, text=text
-            )
+            reply.send("please authenticate at " + link)
+            credential = cAuth.authHandleRequest(flow, httpd)
+            dynamo.insert(telegram_id, credential.to_json())
+            reply.send("Calander API linked your Telegram!")
 
-            cAuth.authHandleRequest(flow, httpd)
+        else:
+            reply.send("You have been authenticated already")
 
     def chatRepeat(self, bot, update, args):
         logging.log(logging.INFO, bot, (update, args))
 
         bot.sendMessage(
-            chat_id=update.message.chat_id, text=args
+            chat_id=update.message.chat_id,text=args
         )
 
 
