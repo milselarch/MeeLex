@@ -63,7 +63,7 @@ class ToastParser(object):
 
     def authenticate(self, replyObj, user_id):
         #link, httpd, flow = cAuth.makeAuthLink("localhost", 30001)
-        link, httpd, flow = cAuth.makeAuthLink('10.143.163.36', 30000)
+        link, httpd, flow = cAuth.makeAuthLink(authAddr, 30000)
         replyObj.send("please authenticate at " + link)
         credential = cAuth.authHandleRequest(flow, httpd)
         dynamo.insert(user_id, credential.to_json())
