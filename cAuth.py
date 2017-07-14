@@ -44,7 +44,8 @@ tools.run_flow library code
 """
 
 class ClientRedirectServer(BaseHTTPServer.HTTPServer):
-    """A server to handle OAuth 2.0 redirects back to localhost.
+    """
+    A server to handle OAuth 2.0 redirects back to localhost.
 
     Waits for a single request and parses the query parameters
     into query_params and then stops serving.
@@ -130,9 +131,7 @@ def authHandleRequest(flow, httpd):
     if 'code' in httpd.query_params:
         code = httpd.query_params['code']
     else:
-        print('Failed to find "code" in the query parameters '
-              'of the redirect.')
-        sys.exit('Try running with --noauth_local_webserver.')
+        raise ValueError("code query parameter not found")
 
     try:
         credential = flow.step2_exchange(code, http=None)
@@ -140,12 +139,12 @@ def authHandleRequest(flow, httpd):
         print(help(credential))
 
     except client.FlowExchangeError as e:
-        sys.exit('Authentication has failed: {0}'.format(e))
+        print(e)
+        raise client.FlowExchangeError
 
     #storage.put(credential)
     #credential.set_store(storage)
     print('Authentication successful.')
-
     return credential
 
 def makeCredential(json):
