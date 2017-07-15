@@ -22,6 +22,8 @@ logging.basicConfig(
     level = logging.INFO
     )
 
+flows = {}
+
 class Reply(object):
     def __init__(self, bot, chat_id):
         self.bot = bot
@@ -53,6 +55,9 @@ class ToastParser(object):
         dispatcher.add_handler(CommandHandler(
             'b', self.chatLex, pass_args=True
         ))
+        dispatcher.add_handler(CommandHandler(
+            'code', self.chatCode, pass_args=True
+        ))
 
         dispatcher.add_handler(CommandHandler(
             'devc', self.chatDevc, pass_args=True
@@ -63,13 +68,36 @@ class ToastParser(object):
 
     def authenticate(self, replyObj, user_id):
         #link, httpd, flow = cAuth.makeAuthLink("localhost", 30001)
-        link, httpd, flow = cAuth.makeAuthLink(
-            "milselarch.com", "localhost", 30000
-        )
+        link, flow = cAuth.makeAuthLink()
+        text = "please authenticate at " + link + "."
+        text += " use /code <yourcode> to activate code"
         replyObj.send("please authenticate at " + link)
-        credential = cAuth.authHandleRequest(flow, httpd)
-        dynamo.insert(user_id, credential.to_json())
-        replyObj.send("Calander API linked your Telegram!")
+
+        flows[user_id] = flow
+
+    def chatCode(self, bot, update, args):
+        reply = Reply(bot, update.message.chat_id)
+        telegram_id = update.message.from_user.id
+
+        if len(args) == 0:
+            reply.send("code is empty!")
+
+        elif telegram_id in flows:
+            flow = flows[telegram_id]
+            code = args[0]
+
+            try:
+                credential = cAuth.authHandleCode(flow, code)
+                dynamo.insert(telegram_id, credential.to_json())
+                reply.send("Calander API linked your Telegram!")
+
+                del flows[telegram_id]
+
+            except cAuth.client.FlowExchangeError:
+                reply.send("code is wrong, try again.")
+
+        else:
+            reply.send("you haven't started with setup using /start !")
 
     def chatStart(self, bot, update):
         #logging.log(logging.INFO, bot, (update,))

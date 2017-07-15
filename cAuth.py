@@ -6,7 +6,7 @@ from oauth2client import client
 from oauth2client import tools
 from oauth2client.file import Storage
 
-import http.server as BaseHTTPServer
+import http.server
 
 import argparse as argparser
 import datetime
@@ -36,14 +36,14 @@ except ImportError:
 # If modifying these scopes, delete your previously saved credentials
 # at ~/.credentials/calendar-python-quickstart.json
 SCOPES = 'https://www.googleapis.com/auth/calendar'
-CLIENT_SECRET_FILE = 'data/client_secret_web.json'
+CLIENT_SECRET_FILE = 'data/client_secret.json'
 APPLICATION_NAME = 'Google Calendar API Python Quickstart'
 
 """
 tools.run_flow library code
 """
 
-class ClientRedirectServer(BaseHTTPServer.HTTPServer):
+class ClientRedirectServer(http.server.HTTPServer):
     """
     A server to handle OAuth 2.0 redirects back to localhost.
 
@@ -51,8 +51,18 @@ class ClientRedirectServer(BaseHTTPServer.HTTPServer):
     into query_params and then stops serving.
     """
     query_params = {}
+    #timeout = 50000
 
-class ClientRedirectHandler(BaseHTTPServer.BaseHTTPRequestHandler):
+    """
+    def do_GET(self):
+        print(self.path)
+        self.send_response(301)
+        new_path = '%s%s' % ('http://milselarch.com', self.path)
+        self.send_header('Location', new_path)
+        self.end_headers()
+    """
+
+class ClientRedirectHandler(http.server.BaseHTTPRequestHandler):
     """
     A handler for OAuth 2.0 redirects back to localhost.
 
@@ -90,14 +100,13 @@ class ClientRedirectHandler(BaseHTTPServer.BaseHTTPRequestHandler):
         running as cmd. line program.
         """
 
-def makeAuthLink(
-        host, redirectHost, port, flow=None
-    ):
+def makeAuthLink(flow=None):
 
     if flow == None:
         flow = client.flow_from_clientsecrets(CLIENT_SECRET_FILE, SCOPES)
         flow.user_agent = APPLICATION_NAME
 
+    """
     httpd = ClientRedirectServer(
         (redirectHost, port),
         ClientRedirectHandler
@@ -106,13 +115,19 @@ def makeAuthLink(
     oauth_callback = 'http://{host}:{port}'.format(
         host=host, port=port
     )
+    """
 
+    oauth_callback = client.OOB_CALLBACK_URN
     flow.redirect_uri = oauth_callback
     authorize_url = flow.step1_get_authorize_url()
-    return authorize_url, httpd, flow
+    return authorize_url, flow
 
+def authHandleCode(flow, code):
+    credential = flow.step2_exchange(code, http=None)
+    return credential
 
 def authHandleRequest(flow, httpd):
+    if httpd == None: return
     httpd.handle_request()
 
     if 'error' in httpd.query_params:
@@ -264,3 +279,12 @@ def makeMeeting(credential, time, date, room):
         ).execute()
 
     return event.get('htmlLink')
+
+
+if __name__ == "__main__":
+    httpd = ClientRedirectServer(
+        ("0.0.0.0", 50001),
+        ClientRedirectHandler
+    )
+
+    httpd.handle_request()
