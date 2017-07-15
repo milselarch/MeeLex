@@ -91,22 +91,20 @@ class ClientRedirectHandler(BaseHTTPServer.BaseHTTPRequestHandler):
         """
 
 def makeAuthLink(
-        hostname, port, flow=None
+        host, redirectHost, port, flow=None
     ):
 
     if flow == None:
         flow = client.flow_from_clientsecrets(CLIENT_SECRET_FILE, SCOPES)
         flow.user_agent = APPLICATION_NAME
 
-    success = False
-
     httpd = ClientRedirectServer(
-        (hostname, port),
+        (redirectHost, port),
         ClientRedirectHandler
     )
 
     oauth_callback = 'http://{host}:{port}/'.format(
-        host=hostname, port=port
+        host=host, port=port
     )
 
     flow.redirect_uri = oauth_callback
