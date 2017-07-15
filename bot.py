@@ -93,7 +93,8 @@ class ToastParser(object):
 
                 del flows[telegram_id]
 
-            except cAuth.client.FlowExchangeError:
+            except cAuth.client.FlowExchangeError as e:
+                print(e)
                 reply.send("code is wrong, try again.")
 
         else:
@@ -148,6 +149,7 @@ class ToastParser(object):
                 lexUser = lexmel.users[telegram_id]
 
             except (ValueError, cAuth.client.FlowExchangeError) as e:
+                print(e)
                 reply("Authentication process failed!!")
                 return
 
