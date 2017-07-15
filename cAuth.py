@@ -36,7 +36,7 @@ except ImportError:
 # If modifying these scopes, delete your previously saved credentials
 # at ~/.credentials/calendar-python-quickstart.json
 SCOPES = 'https://www.googleapis.com/auth/calendar'
-CLIENT_SECRET_FILE = 'data/client_secret.json'
+CLIENT_SECRET_FILE = 'data/client_secret_web.json'
 APPLICATION_NAME = 'Google Calendar API Python Quickstart'
 
 """
@@ -103,7 +103,7 @@ def makeAuthLink(
         ClientRedirectHandler
     )
 
-    oauth_callback = 'http://{host}:{port}/'.format(
+    oauth_callback = 'http://{host}:{port}'.format(
         host=host, port=port
     )
 
@@ -163,7 +163,7 @@ def run_flow(
 
 
     if success:
-        oauth_callback = 'http://{host}:{port}/'.format(
+        oauth_callback = 'http://{host}/:{port}'.format(
             host=flags.auth_host_name, port=port_number
         )
     else:

@@ -85,7 +85,8 @@ class ToastParser(object):
             try:
                 self.authenticate(reply, telegram_id)
             except (ValueError, cAuth.client.FlowExchangeError) as e:
-                reply("Authentication process failed!!")
+                logging.error(e)
+                reply.send("Authentication process failed!!")
 
         else:
             reply.send("You have been authenticated already")
