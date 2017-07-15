@@ -1,10 +1,12 @@
 from telegram.ext import Updater
 from telegram.ext import CommandHandler
 
+import datetime
+
 import logging
 import dynamo
 import lexmel
-#import calander
+import calander
 import cAuth
 import json
 
@@ -23,6 +25,8 @@ logging.basicConfig(
     )
 
 flows = {}
+
+#/bookApp davinci room for four people at 2pm tomorrow
 
 class Reply(object):
     def __init__(self, bot, chat_id):
@@ -84,7 +88,7 @@ class ToastParser(object):
 
         elif telegram_id in flows:
             flow = flows[telegram_id]
-            code = args[0]
+            code = args[0].strip()
 
             try:
                 credential = cAuth.authHandleCode(flow, code)
@@ -94,7 +98,7 @@ class ToastParser(object):
                 del flows[telegram_id]
 
             except cAuth.client.FlowExchangeError as e:
-                print(e)
+                print(e, flows)
                 reply.send("code is wrong, try again.")
 
         else:
@@ -192,11 +196,23 @@ class ToastParser(object):
             roomName = slots["RoomNames"]
             roomTimeSlot = slots["RoomTimeSlot"]
 
-            link = cAuth.makeMeeting(
-                credential, roomTimeSlot, roomDate, roomName
-            )
+            start = calander.toDateTime(roomTimeSlot, roomDate)
+            end = start + datetime.timedelta(seconds=3600)
+            items = calander.cheakIfFree(credential, start, end)
 
-            reply.send("Room booked! View details @ " + link)
+            if len(items) == 0:
+                link = calander.makeMeeting(
+                    credential, roomTimeSlot, roomDate, roomName
+                )
+
+                reply.send("Room booked! View details @ " + link)
+
+            else:
+                reply.send(
+                    "already have activity %s scheduled at that time!"
+                    % repr(items[0]["description"])
+                )
+
 
     def chatDevc(self, bot, update, args):
         #logging.log(logging.INFO, bot, (update, str(args)))
@@ -212,7 +228,7 @@ class ToastParser(object):
             credential = cAuth.makeCredential(credentialJSON)
             print("PRE MAKE MEET")
 
-            meetingLink = cAuth.makeMeeting(
+            meetingLink = calander.makeMeeting(
                 credential, '14:21', '2017-09-21', 'da vinci'
             )
 
