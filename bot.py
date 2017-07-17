@@ -176,6 +176,25 @@ class ToastParser(object):
         lexResponse = lexUser.send(inText)
         print(json.dumps(lexResponse, indent=4, sort_keys=True))
 
+        cond = "slotToElicit" in lexResponse
+        if cond: cond = lexResponse["slotToElicit"] == "RoomTimeSlot"
+
+        if cond:
+            start = datetime.datetime.utcnow()
+            end = start + datetime.timedelta(seconds=3600*24)
+            items = calander.cheakIfFree(credential, start, end)
+
+            while len(items) != 0:
+                start = end
+                end += datetime.timedelta(seconds=3600)
+                items = calander.cheakIfFree(credential, start, end)
+
+            reply.send(
+                "Suggested time: " + str(
+                    start + datetime.timedelta(seconds=3600*8)
+                )
+            )
+
         if "message" in lexResponse:
             reply.send(lexResponse["message"])
 
