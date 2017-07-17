@@ -73,9 +73,9 @@ class ToastParser(object):
     def authenticate(self, replyObj, user_id):
         #link, httpd, flow = cAuth.makeAuthLink("localhost", 30001)
         link, flow = cAuth.makeAuthLink()
-        text = "please authenticate at " + link + "."
-        text += " use /code <yourcode> to activate code"
-        replyObj.send("please authenticate at " + link)
+        text = "Please authenticate at " + link + "."
+        text += " Use /code <yourcode> to activate code"
+        replyObj.send("Please authenticate at " + link)
 
         flows[user_id] = flow
 
@@ -84,7 +84,7 @@ class ToastParser(object):
         telegram_id = update.message.from_user.id
 
         if len(args) == 0:
-            reply.send("code is empty!")
+            reply.send("Code is empty!")
 
         elif telegram_id in flows:
             flow = flows[telegram_id]
@@ -93,16 +93,16 @@ class ToastParser(object):
             try:
                 credential = cAuth.authHandleCode(flow, code)
                 dynamo.insert(telegram_id, credential.to_json())
-                reply.send("Calander API linked your Telegram!")
+                reply.send("Calender API linked your Telegram!")
 
                 del flows[telegram_id]
 
             except cAuth.client.FlowExchangeError as e:
                 print(e, flows)
-                reply.send("code is wrong, try again.")
+                reply.send("Code is wrong, try again.")
 
         else:
-            reply.send("you haven't started with setup using /start !")
+            reply.send("You haven't started with setup using /start !")
 
     def chatStart(self, bot, update):
         #logging.log(logging.INFO, bot, (update,))
@@ -209,7 +209,7 @@ class ToastParser(object):
 
             else:
                 reply.send(
-                    "already have activity %s scheduled at that time!"
+                    "There is already an activity %s scheduled at that time!"
                     % repr(items[0]["description"])
                 )
 
