@@ -93,7 +93,7 @@ class ToastParser(object):
             try:
                 credential = cAuth.authHandleCode(flow, code)
                 dynamo.insert(telegram_id, credential.to_json())
-                reply.send("Calender API linked your Telegram!")
+                reply.send("Calendar API is now linked to your Telegram!")
 
                 del flows[telegram_id]
 
@@ -122,7 +122,7 @@ class ToastParser(object):
                 reply.send("Authentication process failed!!")
 
         else:
-            reply.send("You have been authenticated already")
+            reply.send("You have already been authenticated")
 
     def chatRepeat(self, bot, update, args):
         logging.log(logging.INFO, bot, (update, args))
