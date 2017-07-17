@@ -3,6 +3,7 @@ from telegram.ext import CommandHandler
 
 import datetime
 
+import httplib2
 import logging
 import dynamo
 import lexmel
@@ -159,6 +160,17 @@ class ToastParser(object):
 
         credentialJSON = oAuths[0]["credential"]
         credential = cAuth.makeCredential(credentialJSON)
+
+        print(help(credential))
+        print(credential.token_expiry)
+        print(datetime.datetime.utcnow())
+
+        credential.refresh(httplib2.Http())
+        dynamo.changeToken(telegram_id, credential)
+
+        #print("CREDNETIAL EXPIRE: " + str(credential.access_token_expired))
+        #print(type(credential))
+        #print(help(credential))
 
         if telegram_id in lexmel.users:
             print("I!1")

@@ -27,6 +27,28 @@ def insert(telegram_id, credentialJSON):
         }
     )
 
+def changeToken(telegram_id, credential):
+    table.update_item(
+        Key = {
+            'telegram_id': str(telegram_id)
+        },
+
+        UpdateExpression="SET credential = :credential",
+
+        ExpressionAttributeValues={
+            ':credential': credential.to_json(),
+        },
+
+        ReturnValues="UPDATED_NEW"
+    )
+
+def wipe(telegram_id):
+    table.delete_item(
+        Key = {
+            'telegram_id': telegram_id
+        }
+    )
+
 if __name__ == "__main__":
     print(table.scan()['Items'])
 
