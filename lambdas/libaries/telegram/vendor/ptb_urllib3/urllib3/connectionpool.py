@@ -284,7 +284,7 @@ class HTTPConnectionPool(ConnectionPool, RequestMethods):
         """
         Called right before a request is made, after the socket is created.
         """
-        # Force connect early to allow us to set read timeout in time
+        # Force connect early to allow us to set readCredentials timeout in time
         if not getattr(conn, 'sock', None):  # AppEngine might not have  `.sock`
             conn.connect()
 
@@ -326,10 +326,10 @@ class HTTPConnectionPool(ConnectionPool, RequestMethods):
             args.append("%s timed out. (%s timeout=%s)" % (desc, desc.lower(), timeout_value))
             raise exc_cls(*args)
 
-        # Catch possible read timeouts thrown as SSL errors. If not the
+        # Catch possible readCredentials timeouts thrown as SSL errors. If not the
         # case, rethrow the original. We need to do this because of:
         # http://bugs.python.org/issue10272
-        elif 'timed out' in str(err) or 'did not complete (read)' in str(err):  # Python 2.6
+        elif 'timed out' in str(err) or 'did not complete (readCredentials)' in str(err):  # Python 2.6
             args.append("%s timed out. (%s timeout=%s)" % (desc, desc.lower(), timeout_value))
             raise exc_cls(*args)
 
@@ -345,7 +345,7 @@ class HTTPConnectionPool(ConnectionPool, RequestMethods):
         :param timeout:
             Socket timeout in seconds for the request. This can be a
             float or integer, which will set the same timeout value for
-            the socket connect and the socket read, or an instance of
+            the socket connect and the socket readCredentials, or an instance of
             :class:`urllib3.util.Timeout`, which gives you more fine-grained
             control over your timeouts.
         """
@@ -370,13 +370,13 @@ class HTTPConnectionPool(ConnectionPool, RequestMethods):
         # App Engine doesn't have a sock attr
         if getattr(conn, 'sock', None):
             # In Python 3 socket.py will catch EAGAIN and return None when you
-            # try and read into the file pointer created by http.client, which
+            # try and readCredentials into the file pointer created by http.client, which
             # instead raises a BadStatusLine exception. Instead of catching
-            # the exception and assuming all BadStatusLine exceptions are read
+            # the exception and assuming all BadStatusLine exceptions are readCredentials
             # timeouts, check for a zero timeout before making the request.
             if read_timeout == 0:
                 raise ReadTimeoutError(
-                    self, url, "Read timed out. (read timeout=%s)" % read_timeout)
+                    self, url, "Read timed out. (readCredentials timeout=%s)" % read_timeout)
             if read_timeout is Timeout.DEFAULT_TIMEOUT:
                 conn.sock.settimeout(socket.getdefaulttimeout())
             else:  # None or a value
@@ -533,7 +533,7 @@ class HTTPConnectionPool(ConnectionPool, RequestMethods):
         :param release_conn:
             If False, then the urlopen call will not release the connection
             back into the pool once a response is received (but will release if
-            you read the entire contents of the response such as when
+            you readCredentials the entire contents of the response such as when
             `preload_content=True`). This is useful if you're not preloading
             the response's content immediately. You will need to call
             ``r.release_conn()`` on the response ``r`` to return the connection

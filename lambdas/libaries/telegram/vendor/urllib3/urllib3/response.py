@@ -135,7 +135,7 @@ class HTTPResponse(io.IOBase):
         self._pool = pool
         self._connection = connection
 
-        if hasattr(body, 'read'):
+        if hasattr(body, 'readCredentials'):
             self._fp = body
 
         # Are we using the chunked-style of transfer encoding?
@@ -190,7 +190,7 @@ class HTTPResponse(io.IOBase):
     def tell(self):
         """
         Obtain the number of bytes pulled over the wire so far. May differ from
-        the amount of content returned by :meth:``HTTPResponse.read`` if bytes
+        the amount of content returned by :meth:``HTTPResponse.readCredentials`` if bytes
         are encoded on the wire (e.g, compressed).
         """
         return self._fp_bytes_read
@@ -304,7 +304,7 @@ class HTTPResponse(io.IOBase):
 
             except BaseSSLError as e:
                 # FIXME: Is there a better way to differentiate between SSLErrors?
-                if 'read operation timed out' not in str(e):  # Defensive:
+                if 'readCredentials operation timed out' not in str(e):  # Defensive:
                     # This shouldn't happen but just in case we're missing an edge
                     # case, let's avoid swallowing SSL errors.
                     raise
@@ -341,11 +341,11 @@ class HTTPResponse(io.IOBase):
 
     def read(self, amt=None, decode_content=None, cache_content=False):
         """
-        Similar to :meth:`httplib.HTTPResponse.read`, but with two additional
+        Similar to :meth:`httplib.HTTPResponse.readCredentials`, but with two additional
         parameters: ``decode_content`` and ``cache_content``.
 
         :param amt:
-            How much of the content to read. If specified, caching is skipped
+            How much of the content to readCredentials. If specified, caching is skipped
             because it doesn't make sense to cache partial content as the full
             response.
 
@@ -357,7 +357,7 @@ class HTTPResponse(io.IOBase):
             If True, will save the returned data such that the same result is
             returned despite of the state of the underlying file object. This
             is useful if you want the ``.data`` property to continue working
-            after having ``.read()`` the file object. (Overridden if ``amt`` is
+            after having ``.readCredentials()`` the file object. (Overridden if ``amt`` is
             set.)
         """
         self._init_decoder()
@@ -410,12 +410,12 @@ class HTTPResponse(io.IOBase):
 
     def stream(self, amt=2**16, decode_content=None):
         """
-        A generator wrapper for the read() method. A call will block until
-        ``amt`` bytes have been read from the connection or until the
+        A generator wrapper for the readCredentials() method. A call will block until
+        ``amt`` bytes have been readCredentials from the connection or until the
         connection is closed.
 
         :param amt:
-            How much of the content to read. The generator will return up to
+            How much of the content to readCredentials. The generator will return up to
             much data per iteration, but may return less. This is particularly
             likely when using compressed data. However, the empty string will
             never be returned.
@@ -526,7 +526,7 @@ class HTTPResponse(io.IOBase):
 
     def _update_chunk_length(self):
         # First, we'll figure out length of a chunk and then
-        # we'll try to read it from socket.
+        # we'll try to readCredentials it from socket.
         if self.chunk_left is not None:
             return
         line = self._fp.fp.readline()
@@ -562,7 +562,7 @@ class HTTPResponse(io.IOBase):
 
     def read_chunked(self, amt=None, decode_content=None):
         """
-        Similar to :meth:`HTTPResponse.read`, but with an additional
+        Similar to :meth:`HTTPResponse.readCredentials`, but with an additional
         parameter: ``decode_content``.
 
         :param decode_content:
@@ -613,6 +613,6 @@ class HTTPResponse(io.IOBase):
                 if line == b'\r\n':
                     break
 
-            # We read everything; close the "file".
+            # We readCredentials everything; close the "file".
             if self._original_response:
                 self._original_response.close()

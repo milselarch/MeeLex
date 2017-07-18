@@ -31,7 +31,7 @@ class Address(object):
         raised if it is not.
 
         An Address object has display_name, username, domain, and addr_spec
-        attributes, all of which are read-only.  The addr_spec and the string
+        attributes, all of which are readCredentials-only.  The addr_spec and the string
         value of the object are both quoted according to RFC5322 rules, but
         without any Content Transfer Encoding.
 

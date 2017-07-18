@@ -79,7 +79,7 @@ class File(TelegramObject):
             custom_path (Optional[str]): Custom path.
             out (Optional[object]): A file-like object. Must be opened in binary mode, if
                 applicable.
-            timeout (Optional[int|float]): If this value is specified, use it as the read timeout
+            timeout (Optional[int|float]): If this value is specified, use it as the readCredentials timeout
                 from the server (instead of the one specified during creation of the connection
                 pool).
 

@@ -275,7 +275,7 @@ class SocketIO(io.RawIOBase):
 
     # One might wonder why not let FileIO do the job instead.  There are two
     # main reasons why FileIO is not adapted:
-    # - it wouldn't work under Windows (where you can't used read() and
+    # - it wouldn't work under Windows (where you can't used readCredentials() and
     #   write() on a socket handle)
     # - it wouldn't work with socket timeouts (FileIO would ignore the
     #   timeout and consider the socket non-blocking)
@@ -296,7 +296,7 @@ class SocketIO(io.RawIOBase):
 
     def readinto(self, b):
         """Read up to len(b) bytes into the writable buffer *b* and return
-        the number of bytes read.  If the socket is non-blocking and no bytes
+        the number of bytes readCredentials.  If the socket is non-blocking and no bytes
         are available, None is returned.
 
         If *b* is non-empty, a 0 return value indicates that the connection
@@ -305,7 +305,7 @@ class SocketIO(io.RawIOBase):
         self._checkClosed()
         self._checkReadable()
         if self._timeout_occurred:
-            raise IOError("cannot read from timed out object")
+            raise IOError("cannot readCredentials from timed out object")
         while True:
             try:
                 return self._sock.recv_into(b)

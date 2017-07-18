@@ -265,7 +265,7 @@ class AppEngineManager(RequestMethods):
         if retries.connect or retries.read or retries.redirect:
             warnings.warn(
                 "URLFetch only supports total retries and does not "
-                "recognize connect, read, or redirect retry parameters.",
+                "recognize connect, readCredentials, or redirect retry parameters.",
                 AppEnginePlatformWarning)
 
         return retries

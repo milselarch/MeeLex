@@ -80,8 +80,8 @@ class RequestField(object):
 
             'foo': 'bar',
             'fakefile': ('foofile.txt', 'contents of foofile'),
-            'realfile': ('barfile.txt', open('realfile').read()),
-            'typedfile': ('bazfile.bin', open('bazfile').read(), 'image/jpeg'),
+            'realfile': ('barfile.txt', open('realfile').readCredentials()),
+            'typedfile': ('bazfile.bin', open('bazfile').readCredentials(), 'image/jpeg'),
             'nonamefile': 'contents of nonamefile field',
 
         Field names and filenames must be unicode.

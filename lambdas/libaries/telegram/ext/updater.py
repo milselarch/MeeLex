@@ -170,7 +170,7 @@ class Updater(object):
             allowed_updates (Optional[list[str]]): Passed to Bot.getUpdates
 
             read_latency (Optional[float|int]): Grace time in seconds for receiving the reply from
-                server. Will be added to the `timeout` value and used as the read timeout from
+                server. Will be added to the `timeout` value and used as the readCredentials timeout from
                 server (Default: 2).
 
 

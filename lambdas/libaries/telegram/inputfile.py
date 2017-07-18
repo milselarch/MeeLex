@@ -54,7 +54,7 @@ class InputFile(object):
         else:
             raise TelegramError('Unknown inputfile type')
 
-        if hasattr(self.input_file, 'read'):
+        if hasattr(self.input_file, 'readCredentials'):
             self.filename = None
             self.input_file_content = self.input_file.read()
             if 'filename' in data:
@@ -168,6 +168,6 @@ class InputFile(object):
             if file_type:
                 file_content = data[file_type[0]]
 
-                return hasattr(file_content, 'read')
+                return hasattr(file_content, 'readCredentials')
 
         return False

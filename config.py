@@ -8,7 +8,8 @@ access by using conf[key] where conf is instance of config
 class config(object):
     data = {
         'botToken': None,
-        'authAddr': None
+        'authAddr': None,
+        'awsDynamodbRegion': None
     }
 
     filename = 'data/config.yml'

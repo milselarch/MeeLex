@@ -1,29 +1,47 @@
 import boto3
-from boto3.dynamodb.conditions import Key, Attr
+from boto3.dynamodb.conditions import (
+    Key, Attr, AttributeExists
+)
 
 import time
+import config
+conf = config.config()
 
-dynamodb = boto3.resource('dynamodb')
+session = boto3.session.Session(
+    region_name = conf["awsDynamodbRegion"]
+)
+
+dynamodb = session.resource('dynamodb')
 table = dynamodb.Table('cxausers')
 table.load()
 
 print(table.creation_date_time)
 
-def read(telegram_id):
+def readCredentials(telegram_id):
     response = table.scan(
-        FilterExpression=Attr('telegram_id').eq(
+        FilterExpression = Attr('telegram_id').eq(
             str(telegram_id)
-        )
+        ) & Attr("credential").exists()
     )
 
     return response['Items']
 
-def insert(telegram_id, credentialJSON):
+def addCredential(telegram_id, credentialJSON):
     table.put_item(
        Item = {
            'telegram_id': str(telegram_id),
            'credential': credentialJSON,
            'timestamp': str(time.time())
+        }
+    )
+
+
+def addFlowJSON(telegram_id, flowJSON):
+    table.put_item(
+        Item = {
+            'telegram_id': str(telegram_id),
+            'flow': flowJSON,
+            'timestamp': str(time.time())
         }
     )
 
@@ -35,7 +53,7 @@ def changeToken(telegram_id, credential):
 
         UpdateExpression="SET credential = :credential",
 
-        ExpressionAttributeValues={
+        ExpressionAttributeValues = {
             ':credential': credential.to_json(),
         },
 

@@ -32,7 +32,7 @@ class Retry(object):
 
     Retries can be defined as a default for a pool::
 
-        retries = Retry(connect=5, read=2, redirect=5)
+        retries = Retry(connect=5, readCredentials=2, redirect=5)
         http = PoolManager(retries=retries)
         response = http.request('GET', 'http://example.com/')
 
@@ -67,7 +67,7 @@ class Retry(object):
         Set to ``0`` to fail on the first retry of this type.
 
     :param int read:
-        How many times to retry on read errors.
+        How many times to retry on readCredentials errors.
 
         These errors are raised after the request was sent to the server, so the
         request may have side-effects.
@@ -381,7 +381,7 @@ class Retry(object):
 
     def __repr__(self):
         return ('{cls.__name__}(total={self.total}, connect={self.connect}, '
-                'read={self.read}, redirect={self.redirect})').format(
+                'readCredentials={self.readCredentials}, redirect={self.redirect})').format(
                     cls=type(self), self=self)
 
 

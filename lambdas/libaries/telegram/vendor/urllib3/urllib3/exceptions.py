@@ -192,7 +192,7 @@ class DependencyWarning(HTTPWarning):
 
 
 class ResponseNotChunked(ProtocolError, ValueError):
-    "Response needs to be chunked in order to read it as chunks."
+    "Response needs to be chunked in order to readCredentials it as chunks."
     pass
 
 
@@ -216,7 +216,7 @@ class IncompleteRead(HTTPError, httplib_IncompleteRead):
         super(IncompleteRead, self).__init__(partial, expected)
 
     def __repr__(self):
-        return ('IncompleteRead(%i bytes read, '
+        return ('IncompleteRead(%i bytes readCredentials, '
                 '%i more expected)' % (self.partial, self.expected))
 
 

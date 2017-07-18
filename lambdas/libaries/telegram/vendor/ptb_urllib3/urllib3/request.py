@@ -110,8 +110,8 @@ class RequestMethods(object):
             fields = {
                 'foo': 'bar',
                 'fakefile': ('foofile.txt', 'contents of foofile'),
-                'realfile': ('barfile.txt', open('realfile').read()),
-                'typedfile': ('bazfile.bin', open('bazfile').read(),
+                'realfile': ('barfile.txt', open('realfile').readCredentials()),
+                'typedfile': ('bazfile.bin', open('bazfile').readCredentials(),
                               'image/jpeg'),
                 'nonamefile': 'contents of nonamefile field',
             }

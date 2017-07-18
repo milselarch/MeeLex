@@ -29,7 +29,7 @@ def _wait_for_io_events(socks, events, timeout=None):
 def wait_for_read(socks, timeout=None):
     """ Waits for reading to be available from a list of sockets
     or optionally a single socket if passed in. Returns a list of
-    sockets that can be read from immediately. """
+    sockets that can be readCredentials from immediately. """
     return _wait_for_io_events(socks, EVENT_READ, timeout)
 
 

@@ -181,7 +181,7 @@ def urlretrieve(url, filename=None, reporthook=None, data=None):
 
     Requires a URL argument. If a filename is passed, it is used as
     the temporary file location. The reporthook argument should be
-    a callable that accepts a block number, a read size, and the
+    a callable that accepts a block number, a readCredentials size, and the
     total file size of the URL target. The data argument should be
     valid URL encoded data.
 
@@ -1263,7 +1263,7 @@ class AbstractHTTPHandler(BaseHandler):
 
         # We want to make an HTTP/1.1 request, but the addinfourl
         # class isn't prepared to deal with a persistent connection.
-        # It will try to read all remaining data from the socket,
+        # It will try to readCredentials all remaining data from the socket,
         # which will block while the server waits for the next request.
         # So make sure the connection gets closed after the (only)
         # request.

@@ -20,7 +20,7 @@ class Timeout(object):
 
     Timeouts can be defined as a default for a pool::
 
-        timeout = Timeout(connect=2.0, read=7.0)
+        timeout = Timeout(connect=2.0, readCredentials=7.0)
         http = PoolManager(timeout=timeout)
         response = http.request('GET', 'http://example.com/')
 
@@ -30,14 +30,14 @@ class Timeout(object):
 
     Timeouts can be disabled by setting all the parameters to ``None``::
 
-        no_timeout = Timeout(connect=None, read=None)
+        no_timeout = Timeout(connect=None, readCredentials=None)
         response = http.request('GET', 'http://example.com/, timeout=no_timeout)
 
 
     :param total:
-        This combines the connect and read timeouts into one; the read timeout
+        This combines the connect and readCredentials timeouts into one; the readCredentials timeout
         will be set to the time leftover from the connect attempt. In the
-        event that both a connect timeout and a total are specified, or a read
+        event that both a connect timeout and a total are specified, or a readCredentials
         timeout and a total are specified, the shorter timeout will be applied.
 
         Defaults to None.
@@ -55,8 +55,8 @@ class Timeout(object):
 
     :param read:
         The maximum amount of time to wait between consecutive
-        read operations for a response from the server. Omitting
-        the parameter will default the read timeout to the system
+        readCredentials operations for a response from the server. Omitting
+        the parameter will default the readCredentials timeout to the system
         default, probably `the global default timeout in socket.py
         <http://hg.python.org/cpython/file/603b4d593758/Lib/socket.py#l535>`_.
         None will set an infinite timeout.
@@ -73,8 +73,8 @@ class Timeout(object):
         high CPU load, high swap, the program running at a low priority level,
         or other behaviors.
 
-        In addition, the read and total timeouts only measure the time between
-        read operations on the socket connecting the client and the server,
+        In addition, the readCredentials and total timeouts only measure the time between
+        readCredentials operations on the socket connecting the client and the server,
         not the total amount of time for the request to return a complete
         response. For most requests, the timeout is raised because the server
         has not sent the first byte in the specified time. This is not always
@@ -92,12 +92,12 @@ class Timeout(object):
 
     def __init__(self, total=None, connect=_Default, read=_Default):
         self._connect = self._validate_timeout(connect, 'connect')
-        self._read = self._validate_timeout(read, 'read')
+        self._read = self._validate_timeout(read, 'readCredentials')
         self.total = self._validate_timeout(total, 'total')
         self._start_connect = None
 
     def __str__(self):
-        return '%s(connect=%r, read=%r, total=%r)' % (
+        return '%s(connect=%r, readCredentials=%r, total=%r)' % (
             type(self).__name__, self._connect, self._read, self.total)
 
     @classmethod
@@ -212,17 +212,17 @@ class Timeout(object):
 
     @property
     def read_timeout(self):
-        """ Get the value for the read timeout.
+        """ Get the value for the readCredentials timeout.
 
         This assumes some time has elapsed in the connection timeout and
-        computes the read timeout appropriately.
+        computes the readCredentials timeout appropriately.
 
-        If self.total is set, the read timeout is dependent on the amount of
+        If self.total is set, the readCredentials timeout is dependent on the amount of
         time taken by the connect timeout. If the connection time has not been
         established, a :exc:`~urllib3.exceptions.TimeoutStateError` will be
         raised.
 
-        :return: Value to use for the read timeout.
+        :return: Value to use for the readCredentials timeout.
         :rtype: int, float, :attr:`Timeout.DEFAULT_TIMEOUT` or None
         :raises urllib3.exceptions.TimeoutStateError: If :meth:`start_connect`
             has not yet been called on this object.

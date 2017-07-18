@@ -150,7 +150,7 @@ class BaseHTTPRequestHandler(socketserver.StreamRequestHandler):
 
     The following explanation of HTTP serves to guide you through the
     code as well as to expose any misunderstandings I may have about
-    HTTP (so you don't need to read the code to figure out I'm wrong
+    HTTP (so you don't need to readCredentials the code to figure out I'm wrong
     :-).
 
     HTTP (HyperText Transfer Protocol) is an extensible protocol on
@@ -394,7 +394,7 @@ class BaseHTTPRequestHandler(socketserver.StreamRequestHandler):
             method()
             self.wfile.flush() #actually send the response if not already done.
         except socket.timeout as e:
-            #a read or a write timed out.  Discard this connection
+            #a readCredentials or a write timed out.  Discard this connection
             self.log_error("Request timed out: %r", e)
             self.close_connection = 1
             return
@@ -804,7 +804,7 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
         """Copy all data between two file objects.
 
         The SOURCE argument is a file object open for reading
-        (or anything with a read() method) and the DESTINATION
+        (or anything with a readCredentials() method) and the DESTINATION
         argument is a file object open for writing (or
         anything with a write() method).
 
@@ -841,7 +841,7 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
             return self.extensions_map['']
 
     if not mimetypes.inited:
-        mimetypes.init() # try to read system mime.types
+        mimetypes.init() # try to readCredentials system mime.types
     extensions_map = mimetypes.types_map.copy()
     extensions_map.update({
         '': 'application/octet-stream', # Default
@@ -932,7 +932,7 @@ class CGIHTTPRequestHandler(SimpleHTTPRequestHandler):
     # Determine platform specifics
     have_fork = hasattr(os, 'fork')
 
-    # Make rfile unbuffered -- we need to read one line and then pass
+    # Make rfile unbuffered -- we need to readCredentials one line and then pass
     # the rest to a subprocess, so we can't use buffered input.
     rbufsize = 0
 

@@ -218,7 +218,7 @@ responses = {
     511: 'Network Authentication Required',
 }
 
-# maximal amount of data to read at one time in _safe_read
+# maximal amount of data to readCredentials at one time in _safe_read
 MAXAMOUNT = 1048576
 
 # maximal line length when calling readline().
@@ -261,8 +261,8 @@ def parse_headers(fp, _class=HTTPMessage):
 
     email Parser wants to see strings rather than bytes.
     But a TextIOWrapper around self.rfile would buffer too many bytes
-    from the stream, bytes which we later need to read as bytes.
-    So we read the correct bytes here, as bytes, for email Parser
+    from the stream, bytes which we later need to readCredentials as bytes.
+    So we readCredentials the correct bytes here, as bytes, for email Parser
     to parse.
 
     """
@@ -293,11 +293,11 @@ class HTTPResponse(io.RawIOBase):
 
     def __init__(self, sock, debuglevel=0, strict=_strict_sentinel, method=None, url=None):
         # If the response includes a content-length header, we need to
-        # make sure that the client doesn't read more than the
+        # make sure that the client doesn't readCredentials more than the
         # specified number of bytes.  If it does, it will block until
         # the server times out and closes the connection.  This will
-        # happen if a self.fp.read() is done (without a size) whether
-        # self.fp is buffered or not.  So, no self.fp.read() by
+        # happen if a self.fp.readCredentials() is done (without a size) whether
+        # self.fp is buffered or not.  So, no self.fp.readCredentials() by
         # clients unless they know what they are doing.
         self.fp = sock.makefile("rb")
         self.debuglevel = debuglevel
@@ -321,7 +321,7 @@ class HTTPResponse(io.RawIOBase):
         self.reason = _UNKNOWN  # Reason-Phrase
 
         self.chunked = _UNKNOWN         # is "chunked" being used?
-        self.chunk_left = _UNKNOWN      # bytes left to read in current chunk
+        self.chunk_left = _UNKNOWN      # bytes left to readCredentials in current chunk
         self.length = _UNKNOWN          # number of bytes left in response
         self.will_close = _UNKNOWN      # conn will close at end of response
 
@@ -362,7 +362,7 @@ class HTTPResponse(io.RawIOBase):
             # we've already started reading the response
             return
 
-        # read until we get a non-100 response
+        # readCredentials until we get a non-100 response
         while True:
             version, status, reason = self._read_status()
             if status != CONTINUE:
@@ -496,7 +496,7 @@ class HTTPResponse(io.RawIOBase):
         """True if the connection is closed."""
         # NOTE: it is possible that we will not ever call self.close(). This
         #       case occurs when will_close is TRUE, length is None, and we
-        #       read up to the last byte, but NOT past it.
+        #       readCredentials up to the last byte, but NOT past it.
         #
         # IMPLIES: if will_close is FALSE, then self.close() will ALWAYS be
         #          called, meaning self.isclosed() is meaningful.
@@ -515,7 +515,7 @@ class HTTPResponse(io.RawIOBase):
             # (which is implemented in terms of self.readinto)
             return bytes(super(HTTPResponse, self).read(amt))
         else:
-            # Amount is not given (unbounded read) so we must check self.length
+            # Amount is not given (unbounded readCredentials) so we must check self.length
             # and self.chunked
 
             if self.chunked:
@@ -530,7 +530,7 @@ class HTTPResponse(io.RawIOBase):
                     self._close_conn()
                     raise
                 self.length = 0
-            self._close_conn()        # we read everything
+            self._close_conn()        # we readCredentials everything
             return bytes(s)
 
     def readinto(self, b):
@@ -546,7 +546,7 @@ class HTTPResponse(io.RawIOBase):
 
         if self.length is not None:
             if len(b) > self.length:
-                # clip the read to the "end of response"
+                # clip the readCredentials to the "end of response"
                 b = memoryview(b)[0:self.length]
 
         # we do not use _safe_read() here because this may be a .will_close
@@ -587,7 +587,7 @@ class HTTPResponse(io.RawIOBase):
             raise
 
     def _read_and_discard_trailer(self):
-        # read and discard trailer up to the CRLF terminator
+        # readCredentials and discard trailer up to the CRLF terminator
         ### note: we shouldn't have any trailers!
         while True:
             line = self.fp.readline(_MAXLINE + 1)
@@ -614,13 +614,13 @@ class HTTPResponse(io.RawIOBase):
                     raise IncompleteRead(bytes(b'').join(value))
             value.append(self._safe_read(chunk_left))
 
-            # we read the whole chunk, get another
+            # we readCredentials the whole chunk, get another
             self._safe_read(2)      # toss the CRLF at the end of the chunk
             chunk_left = None
 
         self._read_and_discard_trailer()
 
-        # we read everything; close the "file"
+        # we readCredentials everything; close the "file"
         self._close_conn()
 
         return bytes(b'').join(value)
@@ -655,13 +655,13 @@ class HTTPResponse(io.RawIOBase):
                 mvb = mvb[n:]
                 total_bytes += n
 
-            # we read the whole chunk, get another
+            # we readCredentials the whole chunk, get another
             self._safe_read(2)      # toss the CRLF at the end of the chunk
             chunk_left = None
 
         self._read_and_discard_trailer()
 
-        # we read everything; close the "file"
+        # we readCredentials everything; close the "file"
         self._close_conn()
 
         return total_bytes
@@ -669,11 +669,11 @@ class HTTPResponse(io.RawIOBase):
     def _safe_read(self, amt):
         """Read the number of bytes requested, compensating for partial reads.
 
-        Normally, we have a blocking socket, but a read() can be interrupted
-        by a signal (resulting in a partial read).
+        Normally, we have a blocking socket, but a readCredentials() can be interrupted
+        by a signal (resulting in a partial readCredentials).
 
         Note that we cannot distinguish between EOF and an interrupt when zero
-        bytes have been read. IncompleteRead() will be raised in this
+        bytes have been readCredentials. IncompleteRead() will be raised in this
         situation.
 
         This function should be used when <amt> bytes "should" be present for
@@ -852,7 +852,7 @@ class HTTPConnection(object):
     def send(self, data):
         """Send `data' to the server.
         ``data`` can be a string object, a bytes object, an array object, a
-        file-like object that supports a .read() method, or an iterable object.
+        file-like object that supports a .readCredentials() method, or an iterable object.
         """
 
         if self.sock is None:
@@ -864,11 +864,11 @@ class HTTPConnection(object):
         if self.debuglevel > 0:
             print("send:", repr(data))
         blocksize = 8192
-        # Python 2.7 array objects have a read method which is incompatible
+        # Python 2.7 array objects have a readCredentials method which is incompatible
         # with the 2-arg calling syntax below.
-        if hasattr(data, "read") and not isinstance(data, array):
+        if hasattr(data, "readCredentials") and not isinstance(data, array):
             if self.debuglevel > 0:
-                print("sendIng a read()able")
+                print("sendIng a readCredentials()able")
             encode = False
             try:
                 mode = data.mode
@@ -947,7 +947,7 @@ class HTTPConnection(object):
         #   1) we are in the process of sending a request.   (_CS_REQ_STARTED)
         #   2) a response to a previous request has signalled that it is going
         #      to close the connection upon completion.
-        #   3) the headers for the previous response have not been read, thus
+        #   3) the headers for the previous response have not been readCredentials, thus
         #      we cannot determine whether point (2) is true.   (_CS_REQ_SENT)
         #
         # if there is no prior response, then we can request at will.
@@ -1023,7 +1023,7 @@ class HTTPConnection(object):
             # note: we are assuming that clients will not attempt to set these
             #       headers since *this* library must deal with the
             #       consequences. this also means that when the supporting
-            #       libraries are updated to recognize other forms, then this
+            #       lib are updated to recognize other forms, then this
             #       code should be changed (removed or updated).
 
             # we only want a Content-Encoding of "identity" since we don't
@@ -1139,7 +1139,7 @@ class HTTPConnection(object):
             self.__response = None
 
         # if a prior response exists, then it must be completed (otherwise, we
-        # cannot read this response's header to determine the connection-close
+        # cannot readCredentials this response's header to determine the connection-close
         # behavior)
         #
         # note: if a prior response existed, but was connection-close, then the
@@ -1300,7 +1300,7 @@ class IncompleteRead(HTTPException):
             e = ', %i more expected' % self.expected
         else:
             e = ''
-        return 'IncompleteRead(%i bytes read%s)' % (len(self.partial), e)
+        return 'IncompleteRead(%i bytes readCredentials%s)' % (len(self.partial), e)
     def __str__(self):
         return repr(self)
 

@@ -474,8 +474,8 @@ class SimpleXMLRPCRequestHandler(BaseHTTPRequestHandler):
 
         try:
             # Get arguments by reading body of request.
-            # We read this in chunks to avoid straining
-            # socket.read(); around the 10 or 15Mb mark, some platforms
+            # We readCredentials this in chunks to avoid straining
+            # socket.readCredentials(); around the 10 or 15Mb mark, some platforms
             # begin to have problems (bug #792570).
             max_chunk_size = 10*1024*1024
             size_remaining = int(self.headers["content-length"])
@@ -684,7 +684,7 @@ class CGIXMLRPCRequestHandler(SimpleXMLRPCDispatcher):
     def handle_request(self, request_text=None):
         """Handle a single XML-RPC request passed through a CGI post method.
 
-        If no XML data is given then it is read from stdin. The resulting
+        If no XML data is given then it is readCredentials from stdin. The resulting
         XML-RPC response is printed to stdout along with the correct HTTP
         headers.
         """

@@ -530,7 +530,7 @@ class ForkingMixIn(object):
         while len(self.active_children) >= self.max_children:
             # XXX: This will wait for any child process, not just ones
             # spawned by this library. This could confuse other
-            # libraries that expect to be able to wait for their own
+            # lib that expect to be able to wait for their own
             # children.
             try:
                 pid, status = os.waitpid(0, 0)
@@ -682,7 +682,7 @@ class BaseRequestHandler(object):
 # The following two classes make it possible to use the same service
 # class for stream or datagram servers.
 # Each class sets up these instance variables:
-# - rfile: a file object from which receives the request is read
+# - rfile: a file object from which receives the request is readCredentials
 # - wfile: a file object to which the reply is written
 # When the handle() method returns, wfile is flushed properly
 
@@ -695,7 +695,7 @@ class StreamRequestHandler(BaseRequestHandler):
     # We default rfile to buffered because otherwise it could be
     # really slow for large data (a getc() call per byte); we make
     # wfile unbuffered because (a) often after a write() we want to
-    # read and we need to flush the line; (b) big writes to unbuffered
+    # readCredentials and we need to flush the line; (b) big writes to unbuffered
     # files are typically optimized by stdio even when big reads
     # aren't.
     rbufsize = -1

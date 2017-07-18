@@ -266,7 +266,7 @@ class WrappedSocket(object):
         except OpenSSL.SSL.WantReadError:
             rd = util.wait_for_read(self.socket, self.socket.gettimeout())
             if not rd:
-                raise timeout('The read operation timed out')
+                raise timeout('The readCredentials operation timed out')
             else:
                 return self.recv(*args, **kwargs)
         else:
@@ -288,7 +288,7 @@ class WrappedSocket(object):
         except OpenSSL.SSL.WantReadError:
             rd = util.wait_for_read(self.socket, self.socket.gettimeout())
             if not rd:
-                raise timeout('The read operation timed out')
+                raise timeout('The readCredentials operation timed out')
             else:
                 return self.recv_into(*args, **kwargs)
 

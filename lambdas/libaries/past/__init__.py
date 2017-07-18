@@ -9,14 +9,14 @@ implementations of some Python 2 constructs in Python 3 and tools to import and
 run Python 2 code in Python 3. It is intended to be used sparingly, as a way of
 running old Python 2 code from Python 3 until the code is ported properly.
 
-Potential uses for libraries:
+Potential uses for lib:
 
 - as a step in porting a Python 2 codebase to Python 3 (e.g. with the ``futurize`` script)
-- to provide Python 3 support for previously Python 2-only libraries with the
+- to provide Python 3 support for previously Python 2-only lib with the
   same APIs as on Python 2 -- particularly with regard to 8-bit strings (the
   ``past.builtins.str`` type).
 - to aid in providing minimal-effort Python 3 support for applications using
-  libraries that do not yet wish to upgrade their code properly to Python 3, or
+  lib that do not yet wish to upgrade their code properly to Python 3, or
   wish to upgrade it gradually to Python 3 style.
 
 

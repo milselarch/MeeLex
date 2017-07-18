@@ -1845,7 +1845,7 @@ class LWPCookieJar(FileCookieJar):
     """
     The LWPCookieJar saves a sequence of "Set-Cookie3" lines.
     "Set-Cookie3" is the format used by the libwww-perl libary, not known
-    to be compatible with any browser, but which is easy to read and
+    to be compatible with any browser, but which is easy to readCredentials and
     doesn't lose information about RFC 2965 cookies.
 
     Additional methods

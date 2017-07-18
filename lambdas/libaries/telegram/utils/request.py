@@ -59,7 +59,7 @@ class Request(object):
             connection attempt to a server to succeed. None will set an infinite timeout for
             connection attempts. (default: 5.)
         read_timeout (int|float): The maximum amount of time (in seconds) to wait between
-            consecutive read operations for a response from the server. None will set an infinite
+            consecutive readCredentials operations for a response from the server. None will set an infinite
             timeout. This value is usually overridden by the various ``telegram.Bot`` methods.
             (default: 5.)
 
@@ -204,7 +204,7 @@ class Request(object):
 
         Args:
             url (str): The web location we want to retrieve.
-            timeout (Optional[int|float]): If this value is specified, use it as the read timeout
+            timeout (Optional[int|float]): If this value is specified, use it as the readCredentials timeout
                 from the server (instead of the one specified during creation of the connection
                 pool).
 
@@ -225,7 +225,7 @@ class Request(object):
         Args:
             url (str): The web location we want to retrieve.
             data (dict[str, str|int]): A dict of key/value pairs. Note: On py2.7 value is unicode.
-            timeout (Optional[int|float]): If this value is specified, use it as the read timeout
+            timeout (Optional[int|float]): If this value is specified, use it as the readCredentials timeout
                 from the server (instead of the one specified during creation of the connection
                 pool).
 
@@ -258,7 +258,7 @@ class Request(object):
 
         Args:
             url (str): The web location we want to retrieve.
-            timeout (Optional[int|float]): If this value is specified, use it as the read timeout
+            timeout (Optional[int|float]): If this value is specified, use it as the readCredentials timeout
                 from the server (instead of the one specified during creation of the connection
                 pool).
 
@@ -273,7 +273,7 @@ class Request(object):
         """Download a file by its URL.
         Args:
             url (str): The web location we want to retrieve.
-            timeout (Optional[int|float]): If this value is specified, use it as the read timeout
+            timeout (Optional[int|float]): If this value is specified, use it as the readCredentials timeout
                 from the server (instead of the one specified during creation of the connection
                 pool).
 

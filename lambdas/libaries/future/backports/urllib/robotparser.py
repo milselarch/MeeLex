@@ -22,7 +22,7 @@ urllib.request = _request
 __all__ = ["RobotFileParser"]
 
 class RobotFileParser(object):
-    """ This class provides a set of methods to read, parse and answer
+    """ This class provides a set of methods to readCredentials, parse and answer
     questions about a single robots.txt file.
 
     """

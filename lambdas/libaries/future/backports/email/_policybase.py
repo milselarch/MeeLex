@@ -84,7 +84,7 @@ class _PolicyBase(object):
 
     def __setattr__(self, name, value):
         if hasattr(self, name):
-            msg = "{!r} object attribute {!r} is read-only"
+            msg = "{!r} object attribute {!r} is readCredentials-only"
         else:
             msg = "{!r} object has no attribute {!r}"
         raise AttributeError(msg.format(self.__class__.__name__, name))

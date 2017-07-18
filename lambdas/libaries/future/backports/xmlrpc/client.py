@@ -35,7 +35,7 @@
 # 2001-10-10 sm  Allow long ints to be passed as ints if they don't overflow
 # 2001-10-17 sm  Test for int and long overflow (allows use on 64-bit systems)
 # 2001-11-12 fl  Use repr() to marshal doubles (from Paul Felix)
-# 2002-03-17 fl  Avoid buffered read when possible (from James Rucker)
+# 2002-03-17 fl  Avoid buffered readCredentials when possible (from James Rucker)
 # 2002-04-07 fl  Added pythondoc comments
 # 2002-04-16 fl  Added __str__ methods to datetime/binary wrappers
 # 2002-05-15 fl  Added error constants (from Andrew Kuchling)
@@ -63,7 +63,7 @@
 # Copyright (c) 1999-2002 by Fredrik Lundh
 #
 # By obtaining, using, and/or copying this software and/or its
-# associated documentation, you agree that you have read, understood,
+# associated documentation, you agree that you have readCredentials, understood,
 # and will comply with the following terms and conditions:
 #
 # Permission to use, copy, modify, and distribute this software and
@@ -1072,15 +1072,15 @@ def gzip_decode(data):
 # Return a decoded file-like object for the gzip encoding
 # as described in RFC 1952.
 #
-# @param response A stream supporting a read() method
-# @return a file-like object that the decoded data can be read() from
+# @param response A stream supporting a readCredentials() method
+# @return a file-like object that the decoded data can be readCredentials() from
 
 class GzipDecodedResponse(gzip.GzipFile if gzip else object):
     """a file-like object to decode a response encoded with the gzip
     method, as described in RFC 1952.
     """
     def __init__(self, response):
-        #response doesn't support tell() and read(), required by
+        #response doesn't support tell() and readCredentials(), required by
         #GzipFile
         if not gzip:
             raise NotImplementedError
@@ -1308,7 +1308,7 @@ class Transport(object):
     # @return Response tuple and target method.
 
     def parse_response(self, response):
-        # read response data from httpresponse, and parse it
+        # readCredentials response data from httpresponse, and parse it
         # Check for new http response object, otherwise it is a file object.
         if hasattr(response, 'getheader'):
             if response.getheader("Content-Encoding", "") == "gzip":
