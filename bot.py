@@ -10,6 +10,7 @@ import lexmel
 import calender
 import cAuth
 import json
+import time
 
 import urllib.request
 
@@ -172,15 +173,20 @@ class ToastParser(object):
             return
 
         credentialJSON = oAuths[0]["credential"]
+        timestamp = oAuths[0]["timestamp"]
         credential = cAuth.makeCredential(credentialJSON)
+        http = httplib2.Http()
+        http = credential.authorize(http)
 
-        print(help(credential))
         print(credential.token_expiry)
-        print(datetime.datetime.utcnow())
+        #print(credential.token_expiry)
+        #print(datetime.datetime.utcnow())
 
         #refresh OAuth2 credentials
-        credential.refresh(httplib2.Http())
-        dynamo.changeToken(telegram_id, credential)
+        print(time.time() - float(timestamp))
+        if time.time() - float(timestamp) > 1800:
+            credential.refresh(httplib2.Http())
+            dynamo.changeToken(telegram_id, credential)
 
         #print("CREDNETIAL EXPIRE: " + str(credential.access_token_expired))
         #print(type(credential))

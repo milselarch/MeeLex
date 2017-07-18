@@ -1,11 +1,10 @@
 import importlib
 
-
 import json
 import sys
 
-client = importlib.import_module("lib.oauth2client", "client")
-tools = importlib.import_module("lib.oauth2client", "tools")
+from oauth2client import client
+#print(help(client))
 
 #from .lib.oauth2client import client
 #from .lib.oauth2client import tools
@@ -51,7 +50,11 @@ def authHandleCode(flow, code):
     return credential
 
 def JsonToFlow(flowJson):
-    flow = client.OAuth2WebServerFlow(**flowJson)
+    #del flowJson["client_id"]
+    flow = client.OAuth2WebServerFlow(
+        filename = CLIENT_SECRET_FILE, scope = SCOPES, **flowJson
+    )
+
     return flow
 
 def flowToJson(flow):
@@ -61,7 +64,7 @@ def flowToJson(flow):
         "token_uri": flow.token_uri,
         "login_hint": flow.login_hint,
         "client_id": flow.client_id,
-        "client_secrets": flow.client_secret
+        "client_secret": flow.client_secret
     })
 
 

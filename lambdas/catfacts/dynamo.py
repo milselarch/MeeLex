@@ -8,6 +8,8 @@ import config
 conf = config.config()
 
 session = boto3.session.Session(
+    aws_access_key_id = conf["AccessID"],
+    aws_secret_access_key = conf["AccessSecret"],
     region_name = conf["awsDynamodbRegion"]
 )
 
@@ -56,16 +58,25 @@ def addFlow(telegram_id, flowJSON):
         }
     )
 
+def delFlow(telegram_id):
+    table.delete_item(
+        Key = {
+            'telegram_id': telegram_id
+        }
+    )
+
 def changeToken(telegram_id, credential):
     table.update_item(
         Key = {
             'telegram_id': str(telegram_id)
         },
 
-        UpdateExpression="SET credential = :credential",
+        UpdateExpression
+        = "SET credential = :credential, timestamp = :timestamp",
 
         ExpressionAttributeValues = {
             ':credential': credential.to_json(),
+            ':timestamp': time.time()
         },
 
         ReturnValues="UPDATED_NEW"

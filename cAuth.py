@@ -45,7 +45,6 @@ tools.run_flow library code
 """
 
 def makeAuthLink(flow=None, redirect=False, host=None, port=None):
-
     if flow == None:
         flow = client.flow_from_clientsecrets(
             CLIENT_SECRET_FILE, SCOPES
@@ -70,7 +69,9 @@ def makeAuthLink(flow=None, redirect=False, host=None, port=None):
 
 
 def JsonToFlow(flowJson):
-    flow = client.OAuth2WebServerFlow(**flowJson)
+    flow = client.OAuth2WebServerFlow(
+        CLIENT_SECRET_FILE, SCOPES, **flowJson
+    )
     return flow
 
 def flowToJson(flow):
@@ -80,7 +81,7 @@ def flowToJson(flow):
         "token_uri": flow.token_uri,
         "login_hint": flow.login_hint,
         "client_id": flow.client_id,
-        "client_secrets": flow.client_secret
+        "client_secret": flow.client_secret
     })
 
 

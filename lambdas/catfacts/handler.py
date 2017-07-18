@@ -1,51 +1,63 @@
 import logging
 import traceback
 
-logging.basicConfig(
-    format = '%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-    level = logging.INFO
-    )
+import json
+import importlib
+
+import os
+import sys
 
 try:
-    import json
-    import importlib
+    here = os.path.dirname(os.path.realpath(__file__))
+    sys.path.append(os.path.join(here, "./lib"))
+    sys.path.append(os.path.join(here, "../lib"))
 
-    cAuth = importlib.import_module("cAuth")
-    dynamo = importlib.import_module("dynamo")
+    import cAuth
+    import dynamo
 
     # https://docs.google.com/document/d/1WFQtcPc03D2fXwOAxg9ihwx-MqgTn0PYMleU-eI5g6k/edit?usp=sharing
+except Exception as e:
+    traceback.print_exc()
 
+def process(event, context):
+    """
+    # Use this code if you don't use the http event
+    # with the LAMBDA-PROXY integration
+    return {
+        "message": "Go Serverless v1.0! function execute success!",
+        "event": event
+    }
+    """
 
+    body = {
+        "message": "Go Serverless v1.0! Function execute success!",
+        "input": event
+        # "input": event
+    }
 
-    def respond(event, context):
-        """
-        # Use this code if you don't use the http event
-        # with the LAMBDA-PROXY integration
-        return {
-            "message": "Go Serverless v1.0! function execute success!",
-            "event": event
-        }
-        """
+    params = event["queryStringParameters"]
+    telegram_id = params["state"]
+    code = params["code"]
 
-        body = {
-            "message": "Go Serverless v1.0! Function execute success!",
-            "input": event
-            # "input": event
-        }
+    jsonFlows = dynamo.readFlow(telegram_id)
+    assert(len(jsonFlows) > 0)
 
-        params = event["queryStringParameters"]
-        telegram_id = params["state"]
-        code = params["code"]
+    jsonFlow = json.loads(jsonFlows[0]["flow"])
+    print(jsonFlow)
 
-        flow = cAuth.JsonToFlow(dynamo.readFlow(telegram_id))
-        credential = cAuth.authHandleCode(flow, code)
-        dynamo.addCredential(telegram_id, credential.to_json())
+    flow = cAuth.JsonToFlow(jsonFlow)
+    credential = cAuth.authHandleCode(flow, code)
+    dynamo.delFlow(telegram_id)
+    dynamo.addCredential(telegram_id, credential.to_json())
 
-        return {
-            "statusCode": 200,
-            "body": json.dumps(code),
-            "message": "You have been authenticated!"
-        }
+    return {
+        "statusCode": 200,
+        "body": json.dumps(code),
+        "message": "You have been authenticated!"
+    }
 
-except:
-    logging.error(traceback.format_exc())
+def respond(event, context):
+    try:
+        return process(event, context)
+    except Exception as e:
+        traceback.print_exc()
