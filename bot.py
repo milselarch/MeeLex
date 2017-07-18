@@ -192,8 +192,15 @@ class ToastParser(object):
 
         #if time.time() - float(timestamp) > 1800:
         if credential.access_token_expired:
-            credential.refresh(http)
-            dynamo.changeToken(telegram_id, credential)
+            try:
+                credential.refresh(http)
+                dynamo.changeToken(telegram_id, credential)
+            except cAuth.client.HttpAccessTokenRefreshError as e:
+                print("CREDENTIAL REFRESH ERROR")
+                reply.send("credential refresh error. Please authenticate again")
+                dynamo.wipe(telegram_id)
+                del lexmel.users[telegram_id]
+                return
 
         if telegram_id in lexmel.users:
             print("I!1")

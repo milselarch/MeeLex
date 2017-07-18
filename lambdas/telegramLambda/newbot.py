@@ -33,19 +33,6 @@ logging.basicConfig(
     level = logging.INFO
     )
 
-""""
-def setup(token):
-    # Create bot, update queue and dispatcher instances
-    bot = Bot(token)
-    dispatcher = Dispatcher(bot, None, workers=0)
-
-    ##### Register handlers here #####
-    return dispatcher
-
-def load(text):
-    Update.de_json(json.loads(text))
-"""
-
 #/bookApp davinci room for four people at 2pm tomorrow
 
 class Reply(object):
@@ -200,9 +187,19 @@ class lambdaBot(object):
             credential.refresh(httplib2.Http())
             dynamo.changeToken(telegram_id, credential)
 
-        if telegram_id in lexmel.users:
-            print("I!1")
-            lexUser = lexmel.users[telegram_id]
+        # if time.time() - float(timestamp) > 1800:
+        if credential.access_token_expired:
+            try:
+                credential.refresh(http)
+                dynamo.changeToken(telegram_id, credential)
+
+            except cAuth.client.HttpAccessTokenRefreshError as e:
+                print("CREDENTIAL REFRESH ERROR")
+                reply.send("credential refresh error. Please authenticate again")
+                dynamo.wipe(telegram_id)
+                del lexmel.users[telegram_id]
+                return
+
         else:
             print("OLD OAUTH")
             lexmel.users[telegram_id] = lexmel.state(telegram_id)
