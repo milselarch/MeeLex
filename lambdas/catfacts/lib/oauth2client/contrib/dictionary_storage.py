@@ -25,7 +25,7 @@ class DictionaryStorage(client.Storage):
         key: A string or other hashable. The credentials will be stored in
              ``dictionary[key]``.
         lock: An optional threading.Lock-like object. The lock will be
-              acquired before anything is written or readCredentials from the
+              acquired before anything is written or read from the
               dictionary.
     """
 

@@ -286,7 +286,7 @@ class VerifyOperation(CryptoOperation):
 
 
 class BigfileOperation(CryptoOperation):
-    """CryptoOperation that doesn't readCredentials the entire file into memory."""
+    """CryptoOperation that doesn't read the entire file into memory."""
 
     def __init__(self):
         CryptoOperation.__init__(self)

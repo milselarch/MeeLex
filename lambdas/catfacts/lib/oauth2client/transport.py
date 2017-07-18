@@ -23,7 +23,7 @@ from oauth2client import _helpers
 
 _LOGGER = logging.getLogger(__name__)
 # Properties present in file-like streams / buffers.
-_STREAM_PROPERTIES = ('readCredentials', 'seek', 'tell')
+_STREAM_PROPERTIES = ('read', 'seek', 'tell')
 
 # Google Data client libraries may need to set this to [401, 403].
 REFRESH_STATUS_CODES = (http_client.UNAUTHORIZED,)

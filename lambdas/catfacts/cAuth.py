@@ -1,12 +1,14 @@
 import importlib
 
-tools = importlib.__import__("lib.oauth2client.tools")
-client = importlib.__import__("lib.oauth2client.client")
 
 import json
 import sys
 
-from oauth2client import client
+client = importlib.import_module("lib.oauth2client", "client")
+tools = importlib.import_module("lib.oauth2client", "tools")
+
+#from .lib.oauth2client import client
+#from .lib.oauth2client import tools
 
 import config
 
@@ -62,12 +64,14 @@ def flowToJson(flow):
         "client_secrets": flow.client_secret
     })
 
+
 def authHandleRequest(code):
     """
     oauth2client.client.FlowExchangeError:
     :param code:
     :return:
     """
+
     flow = client.flow_from_clientsecrets(
         CLIENT_SECRET_FILE, SCOPES
     )

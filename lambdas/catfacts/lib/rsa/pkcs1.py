@@ -17,7 +17,7 @@
 """Functions for PKCS#1 version 1.5 encryption and signing
 
 This module implements certain functionality from PKCS#1 version 1.5. For a
-very clear example, readCredentials http://www.di-mgt.com.au/rsa_alg.html#pkcs1schemes
+very clear example, read http://www.di-mgt.com.au/rsa_alg.html#pkcs1schemes
 
 At least 8 bytes of random padding is used when encrypting a message. This makes
 these methods much more secure than the ones in the ``rsa`` module.
@@ -95,7 +95,7 @@ def _pad_for_encryption(message, target_length):
     while len(padding) < padding_length:
         needed_bytes = padding_length - len(padding)
 
-        # Always readCredentials at least 8 bytes more than we need, and trim off the rest
+        # Always read at least 8 bytes more than we need, and trim off the rest
         # after removing the 0-bytes. This increases the chance of getting
         # enough bytes, especially when needed_bytes is small
         new_padding = os.urandom(needed_bytes + 5)
@@ -252,7 +252,7 @@ def sign(message, priv_key, hash):
     as a "detached signature", because the message itself isn't altered.
 
     :param message: the message to sign. Can be an 8-bit string or a file-like
-        object. If ``message`` has a ``readCredentials()`` method, it is assumed to be a
+        object. If ``message`` has a ``read()`` method, it is assumed to be a
         file-like object.
     :param priv_key: the :py:class:`rsa.PrivateKey` to sign with
     :param hash: the hash method used on the message. Use 'MD5', 'SHA-1',
@@ -289,7 +289,7 @@ def verify(message, signature, pub_key):
     The hash method is detected automatically from the signature.
 
     :param message: the signed message. Can be an 8-bit string or a file-like
-        object. If ``message`` has a ``readCredentials()`` method, it is assumed to be a
+        object. If ``message`` has a ``read()`` method, it is assumed to be a
         file-like object.
     :param signature: the signature block, as created with :py:func:`rsa.sign`.
     :param pub_key: the :py:class:`rsa.PublicKey` of the person signing the message.
@@ -321,7 +321,7 @@ def _hash(message, method_name):
     """Returns the message digest.
 
     :param message: the signed message. Can be an 8-bit string or a file-like
-        object. If ``message`` has a ``readCredentials()`` method, it is assumed to be a
+        object. If ``message`` has a ``read()`` method, it is assumed to be a
         file-like object.
     :param method_name: the hash method, must be a key of
         :py:const:`HASH_METHODS`.
@@ -334,11 +334,11 @@ def _hash(message, method_name):
     method = HASH_METHODS[method_name]
     hasher = method()
 
-    if hasattr(message, 'readCredentials') and hasattr(message.read, '__call__'):
+    if hasattr(message, 'read') and hasattr(message.read, '__call__'):
         # Late import to prevent DeprecationWarnings.
         from . import varblock
 
-        # readCredentials as 1K blocks
+        # read as 1K blocks
         for block in varblock.yield_fixedblocks(message, 1024):
             hasher.update(block)
     else:

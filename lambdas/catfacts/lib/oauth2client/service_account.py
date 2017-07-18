@@ -343,7 +343,7 @@ class ServiceAccountCredentials(client.AssertionCredentials):
         Args:
             service_account_email: string, The email associated with the
                                    service account.
-            file_buffer: stream, A buffer that implements ``readCredentials()``
+            file_buffer: stream, A buffer that implements ``read()``
                          and contains the PKCS#12 key contents.
             private_key_password: string, (Optional) Password for PKCS#12
                                   private key. Defaults to ``notasecret``.

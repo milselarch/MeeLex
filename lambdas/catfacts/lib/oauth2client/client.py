@@ -755,7 +755,7 @@ class OAuth2Credentials(Credentials):
                 if (new_cred and not new_cred.invalid and
                         new_cred.access_token != self.access_token and
                         not new_cred.access_token_expired):
-                    logger.info('Updated access_token readCredentials from Storage')
+                    logger.info('Updated access_token read from Storage')
                     self._updateFromCredential(new_cred)
                 else:
                     self._do_refresh_request(http)
@@ -1219,7 +1219,7 @@ class GoogleCredentials(OAuth2Credentials):
         if not credentials_filename:
             return
 
-        # If we can readCredentials the credentials from a file, we don't need to know
+        # If we can read the credentials from a file, we don't need to know
         # what environment we are in.
         SETTINGS.env_name = DEFAULT_ENV_NAME
 
@@ -1278,7 +1278,7 @@ class GoogleCredentials(OAuth2Credentials):
 
         Args:
             credential_filename: the path to the file from where the
-                                 credentials are to be readCredentials
+                                 credentials are to be read
 
         Raises:
             ApplicationDefaultCredentialsError: raised when the credentials
@@ -1301,7 +1301,7 @@ class GoogleCredentials(OAuth2Credentials):
 
 
 def _save_private_file(filename, json_contents):
-    """Saves a file with readCredentials-write permissions on for the owner.
+    """Saves a file with read-write permissions on for the owner.
 
     Args:
         filename: String. Absolute path to file.
@@ -1381,7 +1381,7 @@ def _get_well_known_file():
 
 def _get_application_default_credential_from_file(filename):
     """Build the Application Default Credentials from file."""
-    # readCredentials the credentials from the file
+    # read the credentials from the file
     with open(filename) as file_obj:
         client_credentials = json.load(file_obj)
 
@@ -2135,14 +2135,12 @@ def flow_from_clientsecrets(filename, scope, redirect_uri=None,
                                                           cache=cache)
         if client_type in (clientsecrets.TYPE_WEB,
                            clientsecrets.TYPE_INSTALLED):
-
             constructor_kwargs = {
                 'redirect_uri': redirect_uri,
                 'auth_uri': client_info['auth_uri'],
                 'token_uri': client_info['token_uri'],
                 'login_hint': login_hint,
             }
-
             revoke_uri = client_info.get('revoke_uri')
             optional = (
                 'revoke_uri',
@@ -2151,7 +2149,6 @@ def flow_from_clientsecrets(filename, scope, redirect_uri=None,
                 'code_verifier',
                 'prompt'
             )
-
             for param in optional:
                 if locals()[param] is not None:
                     constructor_kwargs[param] = locals()[param]

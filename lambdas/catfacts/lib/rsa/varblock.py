@@ -67,13 +67,13 @@ warnings.warn("The 'rsa.varblock' module was deprecated in Python-RSA version "
 def read_varint(infile):
     """Reads a varint from the file.
 
-    When the first byte to be readCredentials indicates EOF, (0, 0) is returned. When an
-    EOF occurs when at least one byte has been readCredentials, an EOFError exception is
+    When the first byte to be read indicates EOF, (0, 0) is returned. When an
+    EOF occurs when at least one byte has been read, an EOFError exception is
     raised.
 
-    :param infile: the file-like object to readCredentials from. It should have a readCredentials()
+    :param infile: the file-like object to read from. It should have a read()
         method.
-    :returns: (varint, length), the readCredentials varint and the number of readCredentials bytes.
+    :returns: (varint, length), the read varint and the number of read bytes.
     """
 
     varint = 0
@@ -128,7 +128,7 @@ def write_varint(outfile, value):
 def yield_varblocks(infile):
     """Generator, yields each block in the input file.
 
-    :param infile: file to readCredentials, is expected to have the VARBLOCK format as
+    :param infile: file to read, is expected to have the VARBLOCK format as
         described in the module's docstring.
     @yields the contents of each block.
     """
@@ -136,7 +136,7 @@ def yield_varblocks(infile):
     # Check the version number
     first_char = infile.read(1)
     if len(first_char) == 0:
-        raise EOFError('Unable to readCredentials VARBLOCK version number')
+        raise EOFError('Unable to read VARBLOCK version number')
 
     version = ord(first_char)
     if version != VARBLOCK_VERSION:
@@ -153,7 +153,7 @@ def yield_varblocks(infile):
 
         read_size = len(block)
         if read_size != block_size:
-            raise EOFError('Block size is %i, but could readCredentials only %i bytes' %
+            raise EOFError('Block size is %i, but could read only %i bytes' %
                            (block_size, read_size))
 
         yield block
@@ -162,7 +162,7 @@ def yield_varblocks(infile):
 def yield_fixedblocks(infile, blocksize):
     """Generator, yields each block of ``blocksize`` bytes in the input file.
 
-    :param infile: file to readCredentials and separate in blocks.
+    :param infile: file to read and separate in blocks.
     :returns: a generator that yields the contents of each block
     """
 

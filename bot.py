@@ -178,6 +178,7 @@ class ToastParser(object):
         print(credential.token_expiry)
         print(datetime.datetime.utcnow())
 
+        #refresh OAuth2 credentials
         credential.refresh(httplib2.Http())
         dynamo.changeToken(telegram_id, credential)
 
@@ -283,7 +284,7 @@ class ToastParser(object):
 
 
 if __name__ == '__main__':
-    #serverFlow = cAuth.client.OAuth2WebServerFlow
-    #print(serverFlow, help(serverFlow))
+    serverFlow = cAuth.client.OAuth2WebServerFlow
+    print(serverFlow, help(serverFlow))
     toaster = ToastParser()
     toaster.start()

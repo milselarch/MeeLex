@@ -299,10 +299,10 @@ class MediaUpload(object):
 
     Args:
       begin: int, offset from beginning of file.
-      length: int, number of bytes to readCredentials, starting at begin.
+      length: int, number of bytes to read, starting at begin.
 
     Returns:
-      A string of bytes readCredentials. May be shorter than length if EOF was reached
+      A string of bytes read. May be shorter than length if EOF was reached
       first.
     """
     raise NotImplementedError()
@@ -468,10 +468,10 @@ class MediaIoBaseUpload(MediaUpload):
 
     Args:
       begin: int, offset from beginning of file.
-      length: int, number of bytes to readCredentials, starting at begin.
+      length: int, number of bytes to read, starting at begin.
 
     Returns:
-      A string of bytes readCredentials. May be shorted than length if EOF was reached
+      A string of bytes read. May be shorted than length if EOF was reached
       first.
     """
     self._fd.seek(begin)
@@ -718,12 +718,12 @@ class _StreamSlice(object):
     """Read n bytes.
 
     Args:
-      n, int, the number of bytes to readCredentials.
+      n, int, the number of bytes to read.
 
     Returns:
       A string of length 'n', or less if EOF is reached.
     """
-    # The data left available to readCredentials sits in [cur, end)
+    # The data left available to read sits in [cur, end)
     cur = self._stream.tell()
     end = self._begin + self._chunksize
     if n == -1 or cur + n > end:
@@ -945,7 +945,7 @@ class HttpRequest(object):
       data = self.resumable.getbytes(
           self.resumable_progress, self.resumable.chunksize())
 
-      # A short readCredentials implies that we are at EOF, so finish the upload.
+      # A short read implies that we are at EOF, so finish the upload.
       if len(data) < self.resumable.chunksize():
         size = str(self.resumable_progress + len(data))
 
@@ -1568,7 +1568,7 @@ class HttpMock(object):
   def __init__(self, filename=None, headers=None):
     """
     Args:
-      filename: string, absolute filename to readCredentials response from
+      filename: string, absolute filename to read response from
       headers: dict, header to return with response
     """
     if headers is None:
@@ -1644,7 +1644,7 @@ class HttpMockSequence(object):
     elif content == 'echo_request_headers_as_json':
       content = json.dumps(headers)
     elif content == 'echo_request_body':
-      if hasattr(body, 'readCredentials'):
+      if hasattr(body, 'read'):
         content = body.read()
       else:
         content = body

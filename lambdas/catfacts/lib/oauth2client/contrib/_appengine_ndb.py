@@ -16,7 +16,7 @@
 
 Classes that directly require App Engine's ndb library. Provided
 as a separate module in case of failure to import ndb while
-other App Engine lib are present.
+other App Engine libraries are present.
 """
 
 import logging

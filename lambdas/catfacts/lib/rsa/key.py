@@ -454,7 +454,7 @@ class PrivateKey(AbstractKey):
         # }
 
         if priv[0] != 0:
-            raise ValueError('Unable to readCredentials this file, version %s != 0' % priv[0])
+            raise ValueError('Unable to read this file, version %s != 0' % priv[0])
 
         as_ints = tuple(int(x) for x in priv[1:9])
         return cls(*as_ints)

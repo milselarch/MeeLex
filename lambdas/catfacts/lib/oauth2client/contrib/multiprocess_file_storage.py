@@ -89,7 +89,7 @@ from oauth2client import client
 
 
 #: The maximum amount of time, in seconds, to wait when acquire the
-#: interprocess lock before falling back to readCredentials-only mode.
+#: interprocess lock before falling back to read-only mode.
 INTERPROCESS_LOCK_DEADLINE = 1
 
 logger = logging.getLogger(__name__)
@@ -169,7 +169,7 @@ def _write_credentials_file(credentials_file, credentials):
     Refer to :func:`_load_credentials_file` for the format.
 
     Args:
-        credentials_file: An open file handle, must be readCredentials/write.
+        credentials_file: An open file handle, must be read/write.
         credentials: A dictionary mapping user-defined keys to an instance of
             :class:`oauth2client.client.Credentials`.
     """
@@ -215,7 +215,7 @@ class _MultiprocessStorageBackend(object):
 
     def _write_credentials(self):
         if self._read_only:
-            logger.debug('In readCredentials-only mode, not writing credentials.')
+            logger.debug('In read-only mode, not writing credentials.')
             return
 
         _write_credentials_file(self._file, self._credentials)

@@ -74,7 +74,7 @@ def encrypt_bigfile(infile, outfile, pub_key):
 
     .. _documentation: https://stuvel.eu/python-rsa-doc/usage.html#working-with-big-files
 
-    :param infile: file-like object to readCredentials the cleartext from
+    :param infile: file-like object to read the cleartext from
     :param outfile: file-like object to write the crypto in VARBLOCK format to
     :param pub_key: :py:class:`rsa.PublicKey` to encrypt with
 
@@ -112,7 +112,7 @@ def decrypt_bigfile(infile, outfile, priv_key):
 
     .. _documentation: https://stuvel.eu/python-rsa-doc/usage.html#working-with-big-files
 
-    :param infile: file-like object to readCredentials the crypto in VARBLOCK format from
+    :param infile: file-like object to read the crypto in VARBLOCK format from
     :param outfile: file-like object to write the cleartext to
     :param priv_key: :py:class:`rsa.PrivateKey` to decrypt with
 
