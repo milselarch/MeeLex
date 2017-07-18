@@ -252,7 +252,7 @@ class ToastParser(object):
             """
 
             slots = lexResponse["slots"]
-            people = slots["NumberOfPeople"]
+            people = slots["NumberofPeople"]
             roomDate = slots["RoomDate"]
             roomName = slots["RoomNames"]
             roomTimeSlot = slots["RoomTimeSlot"]

@@ -40,7 +40,8 @@ def process(event, context):
     code = params["code"]
 
     jsonFlows = dynamo.readFlow(telegram_id)
-    assert(len(jsonFlows) > 0)
+    #assert(len(jsonFlows) > 0)
+    print(jsonFlows)
 
     jsonFlow = json.loads(jsonFlows[0]["flow"])
     print(jsonFlow)

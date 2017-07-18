@@ -65,7 +65,7 @@ def changeToken(telegram_id, credential):
 def wipe(telegram_id):
     table.delete_item(
         Key = {
-            'telegram_id': telegram_id
+            'telegram_id': str(telegram_id)
         }
     )
 

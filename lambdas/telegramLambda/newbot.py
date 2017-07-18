@@ -180,15 +180,6 @@ class lambdaBot(object):
 
         # if time.time() - float(timestamp) > 1800:
         if credential.access_token_expired:
-            credential.refresh(http)
-            dynamo.changeToken(telegram_id, credential)
-
-        if time.time() - float(timestamp) > 1800:
-            credential.refresh(httplib2.Http())
-            dynamo.changeToken(telegram_id, credential)
-
-        # if time.time() - float(timestamp) > 1800:
-        if credential.access_token_expired:
             try:
                 credential.refresh(http)
                 dynamo.changeToken(telegram_id, credential)
@@ -247,7 +238,7 @@ class lambdaBot(object):
             """
 
             slots = lexResponse["slots"]
-            people = slots["NumberOfPeople"]
+            people = slots["NumberofPeople"]
             roomDate = slots["RoomDate"]
             roomName = slots["RoomNames"]
             roomTimeSlot = slots["RoomTimeSlot"]

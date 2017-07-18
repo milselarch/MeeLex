@@ -7,6 +7,7 @@ access by using conf[key] where conf is instance of config
 
 class config(object):
     data = {
+        'authAddr': None,
         'botToken': None,
         'AccessID': None,
         'AccessSecret': None,
