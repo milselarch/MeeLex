@@ -13,15 +13,21 @@ try:
     sys.path.append(os.path.join(here, "../lib"))
     # https://docs.google.com/document/d/1WFQtcPc03D2fXwOAxg9ihwx-MqgTn0PYMleU-eI5g6k/edit?usp=sharing
 
-    import lambdabot
+    import newbot
 
 except Exception as e:
     traceback.print_exc()
 
 def process(event, context):
+    print(event)
+
+    rawTelegramData = event["body"]
+    bot = newbot.lambdaBot()
+    bot.dispatchRaw(rawTelegramData)
+
     return {
         "statusCode": 200,
-        "body": "ITS WORKING"
+        "body": "OK"
     }
 
 def safeHandle(event, context):
@@ -29,3 +35,4 @@ def safeHandle(event, context):
         return process(event, context)
     except Exception as e:
         traceback.print_exc()
+

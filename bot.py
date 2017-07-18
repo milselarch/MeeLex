@@ -97,6 +97,7 @@ class ToastParser(object):
         flows[telegram_id] = flow
 
     def chatGetID(self, bot, update, args):
+        print("UPDATE", type(update), help(update))
         reply = Reply(bot, update.message.chat_id)
         telegram_id = update.message.from_user.id
         reply.send("YOUR ID IS: " + str(telegram_id))
@@ -182,14 +183,16 @@ class ToastParser(object):
         credentialJSON = oAuths[0]["credential"]
         timestamp = oAuths[0]["timestamp"]
         credential = cAuth.makeCredential(credentialJSON)
+
         http = httplib2.Http()
         http = credential.authorize(http)
 
         print(credential.token_expiry)
         print(time.time() - float(timestamp))
 
-        if time.time() - float(timestamp) > 1800:
-            credential.refresh(httplib2.Http())
+        #if time.time() - float(timestamp) > 1800:
+        if credential.access_token_expired:
+            credential.refresh(http)
             dynamo.changeToken(telegram_id, credential)
 
         if telegram_id in lexmel.users:

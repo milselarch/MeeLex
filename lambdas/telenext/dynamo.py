@@ -8,6 +8,8 @@ import config
 conf = config.config()
 
 session = boto3.session.Session(
+    aws_access_key_id=conf["AccessID"],
+    aws_secret_access_key=conf["AccessSecret"],
     region_name = conf["awsDynamodbRegion"]
 )
 
