@@ -52,7 +52,6 @@ def process(event, context):
 
     return {
         "statusCode": 200,
-        "body": json.dumps(code),
         "message": "You have been authenticated!"
     }
 

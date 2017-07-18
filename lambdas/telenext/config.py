@@ -8,18 +8,16 @@ access by using conf[key] where conf is instance of config
 class config(object):
     data = {
         'botToken': None,
-        'authAddr': None,
+        'AccessID': None,
+        'AccessSecret': None,
         'awsDynamodbRegion': None
     }
 
     filename = 'data/config.yml'
 
     def __init__(self, open = True):
-        try:
+        if open == True:
             self.open()
-        except FileNotFoundError:
-            self.makeDefaults()
-
 
     def __getitem__(self, item):
         return self.data[item]
@@ -49,6 +47,7 @@ class config(object):
         fileData = open(self.filename).read()
         fileData = fileData.replace('\t', ' ' * 4)
         data = yaml.load(fileData)
+
         for key in data:
             if key in self.data:
                 self.data[key] = data[key]
@@ -66,5 +65,5 @@ class config(object):
             yaml.dump(self.data, outfile, default_flow_style=False)
 
 if __name__ == '__main__':
-    conf = config()
+    conf = config(open=False)
     conf.update()

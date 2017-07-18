@@ -100,5 +100,4 @@ def cheakIfFree(credential, start, end):
     ).execute()
 
     items = eventsResult['items']
-    #print("ITEMS HERE > ", items)
     return items

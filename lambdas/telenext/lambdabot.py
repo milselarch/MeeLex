@@ -10,9 +10,6 @@ import lexmel
 import calender
 import cAuth
 import json
-import time
-
-import urllib.request
 
 import config
 conf = config.config()
@@ -23,9 +20,6 @@ logging.basicConfig(
     )
 
 flows = {}
-
-#/bookApp davinci room for four people at 2pm tomorrow
-
 class Reply(object):
     def __init__(self, bot, chat_id):
         self.bot = bot
@@ -36,6 +30,9 @@ class Reply(object):
             chat_id=self.chat_id,
             text=text
         )
+
+    def start(self):
+        self.updater.start_polling()
 
 class ToastParser(object):
     toastToken = conf['botToken']
@@ -60,71 +57,9 @@ class ToastParser(object):
         dispatcher.add_handler(CommandHandler(
             'code', self.chatCode, pass_args=True
         ))
-
         dispatcher.add_handler(CommandHandler(
             'devc', self.chatDevc, pass_args=True
         ))
-
-        dispatcher.add_handler(CommandHandler(
-            'getID', self.chatGetID, pass_args=True
-        ))
-
-
-    def start(self):
-        self.updater.start_polling()
-
-    def authenticate(self, replyObj, telegram_id):
-        #link, httpd, flow = cAuth.makeAuthLink("localhost", 30001)
-        #https://3tqc77vss1.execute-api.us-east-1.amazonaws.com/beta
-
-        host = conf['authAddr']
-        #host += "/" + str(telegram_id)
-
-        link, flow = cAuth.makeAuthLink(
-            redirect=True, host=host
-        )
-
-        print(cAuth.flowToJson(flow))
-        print("FLOW", flow, type(flow))
-
-        dynamo.addFlowJSON(telegram_id, cAuth.flowToJson(flow))
-
-        link += "&state=" + str(telegram_id)
-        text = "Please authenticate at " + link + "."
-        text += " Use /code <yourcode> to activate code"
-        replyObj.send("Please authenticate at " + link)
-
-        flows[telegram_id] = flow
-
-    def chatGetID(self, bot, update, args):
-        reply = Reply(bot, update.message.chat_id)
-        telegram_id = update.message.from_user.id
-        reply.send("YOUR ID IS: " + str(telegram_id))
-
-    def chatCode(self, bot, update, args):
-        reply = Reply(bot, update.message.chat_id)
-        telegram_id = update.message.from_user.id
-
-        if len(args) == 0:
-            reply.send("Code is empty!")
-
-        elif telegram_id in flows:
-            flow = flows[telegram_id]
-            code = args[0].strip()
-
-            try:
-                credential = cAuth.authHandleCode(flow, code)
-                dynamo.addCredential(telegram_id, credential.to_json())
-                reply.send("Calendar API is now linked to your Telegram!")
-
-                del flows[telegram_id]
-
-            except cAuth.client.FlowExchangeError as e:
-                print(e, flows)
-                reply.send("Code is wrong, try again.")
-
-        else:
-            reply.send("You haven't started with setup using /start !")
 
     def chatStart(self, bot, update):
         #logging.log(logging.INFO, bot, (update,))
@@ -180,17 +115,19 @@ class ToastParser(object):
             return
 
         credentialJSON = oAuths[0]["credential"]
-        timestamp = oAuths[0]["timestamp"]
         credential = cAuth.makeCredential(credentialJSON)
-        http = httplib2.Http()
-        http = credential.authorize(http)
 
+        print(help(credential))
         print(credential.token_expiry)
-        print(time.time() - float(timestamp))
+        print(datetime.datetime.utcnow())
 
-        if time.time() - float(timestamp) > 1800:
-            credential.refresh(httplib2.Http())
-            dynamo.changeToken(telegram_id, credential)
+        #refresh OAuth2 credentials
+        credential.refresh(httplib2.Http())
+        dynamo.changeToken(telegram_id, credential)
+
+        #print("CREDNETIAL EXPIRE: " + str(credential.access_token_expired))
+        #print(type(credential))
+        #print(help(credential))
 
         if telegram_id in lexmel.users:
             print("I!1")
@@ -263,8 +200,6 @@ class ToastParser(object):
                     "There is already an activity %s scheduled at that time!"
                     % repr(items[0]["description"])
                 )
-
-
     def chatDevc(self, bot, update, args):
         #logging.log(logging.INFO, bot, (update, str(args)))
         print("CHAT LEX")
@@ -289,7 +224,8 @@ class ToastParser(object):
             reply.send("SETUP CALANDER CREDENTIAL FIRST")
 
 
-if __name__ == '__main__':
-    serverFlow = cAuth.client.OAuth2WebServerFlow
-    toaster = ToastParser()
-    toaster.start()
+
+def lambda_handler(event, context):
+    """docstring for lambda_handler(event, context)"""
+
+    return event
