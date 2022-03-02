@@ -2,3 +2,7 @@
 data/config.yml
 __pycache__/
 *.zip
+*.pem
+*.yml
+*.json
+..bfg-report
