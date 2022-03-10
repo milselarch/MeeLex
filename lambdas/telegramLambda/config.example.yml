@@ -1,3 +1,3 @@
-authAddr: boolex.me/auth
+authAddr: <YOUR_AUTH_ADDR>
 awsDynamodbRegion: us-west-2
-botToken: 384681069:AAFA_pv2BWmjVWHvmIysiiSj3958SoB9-z0
+botToken: <YOUR_BOT_TOKEN>
